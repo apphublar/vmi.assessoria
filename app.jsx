@@ -9,6 +9,31 @@ const LINKEDIN = "https://www.linkedin.com/company/vmi-assessoria-empresarial-lt
 const LINKEDIN_HANDLE = "vmi-assessoria-empresarial-ltda";
 const INSTAGRAM = "https://instagram.com/vmiassessoria";
 const INSTAGRAM_HANDLE = "@vmiassessoria";
+const HQ_STREET = "Av. Paulista";
+const HQ_CITY = "São Paulo - SP";
+
+// ----- Configuração editável (stats, hero, presença) -----
+const SITE_CONFIG = {
+  stats: [
+    { value: "+500", label: "Operações realizadas" },
+    { value: "+20", label: "Países atendidos" },
+    { value: "+12", label: "Escritórios no Brasil" },
+    { value: "100%", label: "Foco em conformidade e segurança" }
+  ],
+  heroTrust: [
+    "Operações nacionais e internacionais",
+    "Equipe especializada",
+    "Presença em 12 cidades estratégicas",
+    "Atendimento personalizado"
+  ],
+  processSteps: [
+    ["Target", "Diagnóstico da operação", "Analisamos sua operação e identificamos oportunidades, riscos e requisitos."],
+    ["Doc", "Planejamento estratégico", "Estruturamos a melhor rota aduaneira, fiscal e logística para seu negócio."],
+    ["Stamp", "Execução aduaneira e logística", "Operacionalizamos importação, exportação e toda a cadeia com precisão."],
+    ["Shield", "Acompanhamento completo", "Monitoramos cada etapa junto à Receita Federal e órgãos anuentes."],
+    ["Hands", "Entrega e suporte contínuo", "Garantimos a entrega no destino final com suporte permanente à operação."]
+  ]
+};
 
 // ----- Brand mark (logo) -----
 function BrandMark({ size = "nav" }) {
@@ -90,7 +115,7 @@ function Nav() {
           {links.map(([l, h]) => <a key={h} href={h}>{l}</a>)}
         </nav>
         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-          <a href={WHATSAPP} target="_blank" rel="noopener" className="cta primary">
+          <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="cta primary">
             Fale agora <I.Arrow className="arrow" />
           </a>
           <button className="nav-toggle" aria-label="Menu" onClick={() => setMenuOpen(!menuOpen)}>
@@ -116,19 +141,20 @@ function Hero() {
           <div className="hero-copy">
             <span className="eyebrow">Comércio Exterior &amp; Logística Internacional</span>
             <h1>
-              Conectamos<br />
-              sua empresa <span className="accent">ao mundo.</span>
+              Habilitamos operações internacionais com <span className="accent">segurança, agilidade e inteligência.</span>
             </h1>
             <p className="lede">
-              Soluções inteligentes em <strong style={{ color: "var(--ink)", fontWeight: 600 }}>Comércio Exterior e Logística Internacional</strong>.
+              Assessoria completa em importação, exportação e logística internacional. Da busca por fornecedores até a entrega da mercadoria.
             </p>
             <div className="hero-meta">
               <a href="#contato" className="cta primary">Solicite uma proposta <I.Arrow className="arrow" /></a>
-              <a href="#servicos" className="cta ghost">Conheça os serviços</a>
+              <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="cta ghost">Falar com Especialista</a>
             </div>
-            <div style={{ display: "flex", gap: 28, marginTop: 24, flexWrap: "wrap" }}>
-              <Stat n="+40" l="anos de experiência" />
-            </div>
+            <ul className="hero-trust" aria-label="Diferenciais de confiança">
+              {SITE_CONFIG.heroTrust.map((item) => (
+                <li key={item}><span className="hero-trust-mark" aria-hidden="true">✓</span>{item}</li>
+              ))}
+            </ul>
           </div>
 
           <PortVisual />
@@ -138,20 +164,18 @@ function Hero() {
   );
 }
 
-function Stat({ n, l }) {
-  return (
-    <div className="strip-stat">
-      <span className="n">{n}</span>
-      <span className="l">{l}</span>
-    </div>
-  );
-}
-
 // ----- Hero visual -----
 function PortVisual() {
   return (
     <div className="hero-visual hero-visual--photo">
-      <img src="assets/hero-porto.png" alt="Navio porta-contêineres no porto ao pôr do sol" />
+      <img
+        src="assets/hero-porto.png"
+        alt="Navio porta-contêineres no porto ao pôr do sol"
+        width="800"
+        height="1000"
+        fetchPriority="high"
+        decoding="async"
+      />
       <div className="hero-quote">
         <span className="qmark">"</span>
         <p>Especialistas em comércio exterior. Parceiros no crescimento do seu negócio.</p>
@@ -160,30 +184,39 @@ function PortVisual() {
   );
 }
 
-// ----- Trust strip -----
-const STRIP_LOCATIONS = [
-  "Guarulhos", "Viracopos", "Santos", "Rio de Janeiro", "Curitiba",
-  "Goiânia", "Uruguaiana", "Chuí", "Itajaí", "Florianópolis", "Salvador"
-];
+// ----- Prova social -----
+function SocialProof() {
+  return (
+    <section className="social-proof" id="resultados">
+      <div className="container">
+        <Reveal className="section-head section-head--center">
+          <div>
+            <span className="eyebrow">Resultados</span>
+            <h2 style={{ marginTop: 18 }}>Experiência que gera resultados.</h2>
+          </div>
+        </Reveal>
+        <div className="stats-grid">
+          {SITE_CONFIG.stats.map(({ value, label }, i) => (
+            <Reveal key={label} as="article" className="stat-card" delay={i * 70}>
+              <span className="stat-card__value">{value}</span>
+              <span className="stat-card__label">{label}</span>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
+// ----- Trust strip -----
 function TrustStrip() {
   return (
     <div className="strip">
       <div className="container strip-row">
         <span>Importação <span className="dot" /> Exportação <span className="dot" /> Logística Integrada <span className="dot" /> DUIMP</span>
-        <div className="strip-locations">
-          <span className="strip-locs">
-            {STRIP_LOCATIONS.map((loc, i) => (
-              <React.Fragment key={loc}>
-                {i > 0 && <span className="dot" />}
-                {loc}
-              </React.Fragment>
-            ))}
-          </span>
-          <span className="strip-cta">
-            Envie o local do seu interesse para avaliarmos a possibilidade
-          </span>
-        </div>
+        <span className="strip-cta">
+          Envie o local do seu interesse para avaliarmos a possibilidade
+        </span>
       </div>
     </div>
   );
@@ -191,6 +224,7 @@ function TrustStrip() {
 
 // ----- Quem Somos (About) -----
 const OFFICES = [
+  ["São Paulo", "SP", "Matriz · Av. Paulista"],
   ["Guarulhos", "SP"], ["Viracopos", "SP"], ["Santos", "SP"], ["Rio de Janeiro", "RJ"],
   ["Curitiba", "PR"], ["Goiânia", "GO"], ["Uruguaiana", "RS"], ["Chuí", "RS"],
   ["Itajaí", "SC"], ["Florianópolis", "SC"], ["Salvador", "BA"]
@@ -212,18 +246,19 @@ function About() {
             </p>
             <p style={{ marginTop: 16, color: "var(--ink-soft)", fontSize: 16, lineHeight: 1.6, maxWidth: "56ch" }}>
               Nossa missão é simplificar operações internacionais e gerar resultados para os clientes.
+              Presença estratégica nos principais polos logísticos, aeroportos, portos e fronteiras do Brasil.
             </p>
           </Reveal>
 
           <Reveal as="div" className="about-offices" delay={120}>
             <div className="ao-head">
-              <span className="ao-n">11</span>
-              <span className="ao-t">escritórios de representação em pontos<br/>estratégicos do território nacional</span>
+              <span className="ao-n">12</span>
+              <span className="ao-t">escritórios em pontos estratégicos<br/>do território nacional</span>
             </div>
             <div className="ao-chips">
-              {OFFICES.map(([c, uf]) => (
+              {OFFICES.map(([c, uf, tag]) => (
                 <span className="ao-chip" key={c + uf}>
-                  {c} <em>{uf}</em>
+                  {c} <em>{tag || uf}</em>
                 </span>
               ))}
             </div>
@@ -286,6 +321,38 @@ function Services() {
   );
 }
 
+// ----- Como funciona -----
+function HowItWorks() {
+  return (
+    <section id="como-funciona" className="process-section">
+      <div className="container">
+        <Reveal className="section-head">
+          <div>
+            <span className="eyebrow">Como funciona</span>
+            <h2 style={{ marginTop: 18 }}>Como apoiamos sua operação internacional</h2>
+          </div>
+          <p className="lede">
+            Um processo claro e transparente, do diagnóstico inicial ao suporte contínuo da sua operação.
+          </p>
+        </Reveal>
+        <div className="process-steps">
+          {SITE_CONFIG.processSteps.map(([icon, title, desc], i) => {
+            const Ico = I[icon];
+            return (
+              <Reveal key={title} as="article" className="process-step" delay={i * 60}>
+                <span className="process-step__num">{String(i + 1).padStart(2, "0")}</span>
+                <span className="process-step__icon"><Ico /></span>
+                <h3>{title}</h3>
+                <p>{desc}</p>
+              </Reveal>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ----- Segmentos atendidos -----
 const SEGMENTS = [
   "Máquinas e equipamentos",
@@ -339,14 +406,10 @@ function Why() {
   return (
     <section id="diferenciais" className="why">
       <div className="container">
-        <Reveal className="section-head">
-          <div>
-            <span className="eyebrow">Diferenciais da VMI</span>
-            <h2 style={{ marginTop: 18 }}>Por que escolher<br/>a VMI Assessoria?</h2>
-          </div>
-          <p className="lede">
-            Soluções estratégicas e personalizadas que geram resultados reais para o seu negócio.
-          </p>
+        <Reveal className="why-highlight">
+          <span className="why-highlight__eyebrow">Diferenciais da VMI</span>
+          <h2>Por que empresas escolhem a VMI?</h2>
+          <p>Soluções estratégicas e personalizadas que geram resultados reais para o seu negócio.</p>
         </Reveal>
 
         <div className="why-grid">
@@ -381,8 +444,8 @@ function CtaBlock() {
             </p>
           </div>
           <div className="cta-actions">
-            <a href={WHATSAPP} target="_blank" rel="noopener" className="cta primary">
-              <I.Wpp style={{ width: 16, height: 16 }} /> Conversar pelo WhatsApp
+            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="cta primary">
+              <I.Wpp style={{ width: 16, height: 16 }} /> Falar com Especialista
             </a>
             <a href="#contato" className="cta ghost">Solicitar proposta por e-mail <I.Arrow className="arrow" /></a>
             <span style={{ fontSize: 12.5, color: "var(--muted)", marginTop: 6, letterSpacing: "0.04em" }}>
@@ -422,12 +485,18 @@ function Contact() {
         <Reveal className="section-head">
           <div>
             <span className="eyebrow">Contato</span>
-            <h2 style={{ marginTop: 18 }}>Pronto para<br/>conectar seu negócio?</h2>
+            <h2 style={{ marginTop: 18 }}>Solicite uma análise<br/>da sua operação</h2>
           </div>
           <p className="lede">
             Conte um pouco sobre sua operação — retornamos em até 1 dia útil com uma
             análise inicial e os próximos passos.
           </p>
+        </Reveal>
+
+        <Reveal delay={60}>
+          <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="cta primary contact-cta-top">
+            Falar com Especialista <I.Arrow className="arrow" />
+          </a>
         </Reveal>
 
         <div className="contact-grid">
@@ -485,7 +554,7 @@ function Contact() {
                 </div>
                 <div className="form-foot">
                   <span className="consent">Ao enviar você concorda em ser contatado pela equipe VMI.</span>
-                  <button type="submit" className="cta primary">Enviar mensagem <I.Arrow className="arrow" /></button>
+                  <button type="submit" className="cta primary">Falar com Especialista <I.Arrow className="arrow" /></button>
                 </div>
               </form>
             )}
@@ -533,37 +602,51 @@ function Contact() {
 }
 
 // ----- Footer -----
+const FOOTER_SERVICES = ["Importação", "Exportação", "Assessoria Aduaneira", "Logística Integrada"];
+
 function Footer() {
   return (
     <footer>
       <div className="container">
-        <div className="footer-simple">
+        <div className="footer-grid">
           <div className="footer-brand">
             <BrandMark size="footer" />
             <p className="footer-blurb">
               Soluções inteligentes em Comércio Exterior e Logística Internacional.
             </p>
             <div className="footer-social">
-              <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><I.Linkedin /></a>
               <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><I.Instagram /></a>
+              <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><I.Linkedin /></a>
               <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><I.Wpp /></a>
             </div>
           </div>
 
-          <div className="footer-contact">
-            <a href={WHATSAPP} target="_blank" rel="noopener" className="fc-item">
-              <span className="ico"><I.Phone /></span>
-              {PHONE}
-            </a>
-            <a href={`mailto:${EMAIL}`} className="fc-item">
-              <span className="ico"><I.Mail /></span>
-              {EMAIL}
-            </a>
+          <div className="footer-col">
+            <h4>Serviços</h4>
+            <ul>
+              {FOOTER_SERVICES.map((s) => (
+                <li key={s}><a href="#servicos">{s}</a></li>
+              ))}
+            </ul>
           </div>
 
-          <a href={WHATSAPP} target="_blank" rel="noopener" className="cta primary footer-cta">
-            <I.Wpp style={{ width: 16, height: 16 }} /> Falar no WhatsApp
-          </a>
+          <div className="footer-col">
+            <h4>Contato</h4>
+            <ul>
+              <li><a href={WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+              <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
+            </ul>
+          </div>
+
+          <div className="footer-col">
+            <h4>Localização</h4>
+            <p className="footer-location">{HQ_STREET}<br />{HQ_CITY}</p>
+            <h4 className="footer-col__sub">Redes Sociais</h4>
+            <ul>
+              <li><a href={INSTAGRAM} target="_blank" rel="noopener noreferrer">Instagram</a></li>
+              <li><a href={LINKEDIN} target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+            </ul>
+          </div>
         </div>
 
         <div className="footer-bottom">
@@ -580,9 +663,11 @@ function App() {
     <React.Fragment>
       <Nav />
       <Hero />
+      <SocialProof />
       <TrustStrip />
       <About />
       <Services />
+      <HowItWorks />
       <Segments />
       <Why />
       <CtaBlock />

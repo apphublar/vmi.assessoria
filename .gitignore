@@ -1,0 +1,14 @@
+# Arquivos locais / backup
+VMI.zip
+.thumbnail
+
+# Materiais de referência (não necessários no deploy)
+uploads/
+screenshots/
+pdf-pages/
+export/
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VMI Assessoria Empresarial — Comércio Exterior</title>
+  <meta name="description" content="Assessoria completa em Comércio Exterior. Importação, exportação, despacho aduaneiro, classificação fiscal, DUIMP e logística internacional." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* Print-only adjustments — keep screen view identical to live site */
+    @page {
+      size: A4 portrait;
+      margin: 12mm 10mm;
+    }
+
+    @media print {
+      html, body {
+        background: #f6f4ef !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      /* Hide interactive chrome */
+      .nav,
+      .wa-float,
+      .tweaks-panel,
+      [data-tweaks-panel],
+      .nav-toggle,
+      .mobile-panel { display: none !important; }
+
+      /* Disable sticky / hover / animation */
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+      .reveal { opacity: 1 !important; transform: none !important; }
+
+      /* Tighter section padding for print */
+      section {
+        padding: 28px 0 !important;
+        break-inside: avoid;
+      }
+      .hero { padding-top: 8px !important; padding-bottom: 18px !important; }
+
+      /* Force each main section onto its own page when it would otherwise split awkwardly */
+      #servicos { break-before: page; }
+      #diferenciais { break-before: page; }
+      #processo { break-before: page; }
+      #contato { break-before: page; }
+      footer { break-before: page; padding-top: 24px !important; }
+
+      /* Hero stacks vertically on print, image first */
+      .hero-grid {
+        grid-template-columns: 1fr !important;
+        gap: 18px !important;
+      }
+      .hero-visual {
+        aspect-ratio: 16/8 !important;
+        min-height: 240px !important;
+        max-height: 280px !important;
+      }
+      .hero h1 { font-size: 38px !important; line-height: 1.04 !important; }
+      .lede { font-size: 14px !important; }
+
+      /* Services: side-by-side 2 cols always */
+      .services { grid-template-columns: 1fr 1fr !important; }
+      .svc { padding: 12px 0 !important; break-inside: avoid; }
+      .svc-icon { width: 40px !important; height: 40px !important; }
+      .svc-icon svg { width: 18px !important; height: 18px !important; }
+
+      /* Why */
+      .why-grid { grid-template-columns: 1.2fr 1fr !important; gap: 28px !important; }
+      .why-item { padding: 10px 0 !important; break-inside: avoid; }
+      .why-feature { min-height: 0 !important; padding: 22px !important; }
+
+      /* Process */
+      .process-grid { grid-template-columns: 1fr 1fr 1fr 1fr !important; gap: 14px !important; }
+      .step { break-inside: avoid; }
+      .step .num { font-size: 40px !important; }
+
+      /* CTA */
+      .cta-block { padding: 28px !important; grid-template-columns: 1.4fr 1fr !important; gap: 22px !important; break-inside: avoid; }
+      .cta-block h2 { font-size: 28px !important; }
+
+      /* Contact */
+      .contact-grid { grid-template-columns: 1fr 1fr !important; gap: 28px !important; }
+      .contact-card { padding: 20px !important; break-inside: avoid; }
+      .field input, .field select, .field textarea { padding: 6px 0 !important; }
+      .form-foot .cta { display: none !important; }
+      .field .err { display: none !important; }
+      .offices { grid-template-columns: 1fr 1fr 1fr !important; gap: 12px !important; }
+      .whatsapp-card { margin-top: 18px !important; }
+
+      /* Footer */
+      .footer-simple { grid-template-columns: 1.2fr 1.4fr auto !important; gap: 32px !important; }
+
+      /* Headlines tighten */
+      h2 { font-size: 28px !important; line-height: 1.08 !important; }
+      h3 { font-size: 15px !important; }
+
+      /* Don't break headings from their content */
+      h1, h2, h3, h4 { break-after: avoid; }
+      .section-head, .svc, .why-item, .step, .contact-card, .cta-block { break-inside: avoid; }
+
+      /* Strip stat numbers should still print color */
+      .strip-stat .n, .step .num, .accent-word { color: #b89968 !important; }
+    }
+
+    /* On-screen note for the print tab itself */
+    @media screen {
+      body::before {
+        content: "Print preview · use Cmd/Ctrl+P to save as PDF";
+        position: fixed;
+        top: 8px; left: 50%; transform: translateX(-50%);
+        background: #1f1d1b;
+        color: #f6f4ef;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font: 500 12px/1 "Manrope", sans-serif;
+        letter-spacing: 0.04em;
+        z-index: 9999;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="icons.jsx"></script>
+  <script type="text/babel" src="app.jsx"></script>
+
+  <script type="text/babel" data-presets="env,react">
+    function Root() {
+      return <window.VMIApp />;
+    }
+    ReactDOM.createRoot(document.getElementById("root")).render(<Root />);
+
+    // Auto-print once fonts, images, and React have settled
+    (async () => {
+      try {
+        if (document.fonts && document.fonts.ready) {
+          await document.fonts.ready;
+        }
+        // wait for hero image
+        const heroImg = document.querySelector('.hero-visual img');
+        if (heroImg && !heroImg.complete) {
+          await new Promise((r) => {
+            heroImg.addEventListener('load', r, { once: true });
+            heroImg.addEventListener('error', r, { once: true });
+          });
+        }
+        // small safety delay
+        await new Promise((r) => setTimeout(r, 600));
+        window.print();
+      } catch (e) {
+        console.warn('Print prep error', e);
+        window.print();
+      }
+    })();
+  </script>
+</body>
+</html>

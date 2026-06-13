@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VMI Assessoria Empresarial — Comércio Exterior</title>
+  <meta name="description" content="Soluções inteligentes em Comércio Exterior e Logística Internacional. Importação, exportação, assessoria aduaneira, DUIMP, regimes especiais e benefícios fiscais." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="icons.jsx"></script>
+  <script type="text/babel" src="app.jsx"></script>
+
+  <script type="text/babel" data-presets="env,react">
+    const TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "accent": "#d8b15a",
+      "headlineFont": "DM Sans",
+      "bodyFont": "Manrope"
+    }/*EDITMODE-END*/;
+
+    function TweaksUI() {
+      const { TweaksPanel, useTweaks, TweakSection, TweakColor, TweakSelect } = window;
+      const [t, setTweak] = useTweaks(TWEAKS_DEFAULTS);
+
+      // Apply live changes to CSS vars
+      React.useEffect(() => {
+        document.documentElement.style.setProperty("--accent", t.accent);
+        document.documentElement.style.setProperty("--accent-deep", t.accent);
+        document.documentElement.style.setProperty("--serif", `"${t.headlineFont}", "Manrope", Arial, sans-serif`);
+        document.documentElement.style.setProperty("--sans", `"${t.bodyFont}", Helvetica, Arial, sans-serif`);
+      }, [t]);
+
+      return (
+        <TweaksPanel title="Tweaks">
+          <TweakSection label="Visual">
+            <TweakColor label="Cor de acento" value={t.accent} onChange={(v) => setTweak("accent", v)}
+              options={["#d8b15a", "#c9962f", "#e0c06a", "#b8923f", "#cdb37a"]} />
+          </TweakSection>
+          <TweakSection label="Tipografia">
+            <TweakSelect label="Fonte de títulos" value={t.headlineFont} onChange={(v) => setTweak("headlineFont", v)}
+              options={["DM Sans", "Manrope", "JetBrains Mono"]} />
+            <TweakSelect label="Fonte de texto" value={t.bodyFont} onChange={(v) => setTweak("bodyFont", v)}
+              options={["Manrope", "DM Sans", "JetBrains Mono"]} />
+          </TweakSection>
+        </TweaksPanel>
+      );
+    }
+
+    function Root() {
+      return (
+        <React.Fragment>
+          <window.VMIApp />
+          <TweaksUI />
+        </React.Fragment>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<Root />);
+  </script>
+
+</body>
+</html>

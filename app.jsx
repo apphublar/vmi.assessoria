@@ -6,7 +6,9 @@ const WHATSAPP = "https://wa.me/5511969287540";
 const EMAIL = "operacional@vmiass.com";
 const PHONE = "(11) 96928-7540";
 const LINKEDIN = "https://www.linkedin.com/company/vmi-assessoria-empresarial-ltda";
+const LINKEDIN_HANDLE = "vmi-assessoria-empresarial-ltda";
 const INSTAGRAM = "https://instagram.com/vmiassessoria";
+const INSTAGRAM_HANDLE = "@vmiassessoria";
 
 // ----- Brand mark (logo) -----
 function BrandMark({ size = "nav" }) {
@@ -118,8 +120,7 @@ function Hero() {
               sua empresa <span className="accent">ao mundo.</span>
             </h1>
             <p className="lede">
-              Soluções inteligentes em <strong style={{ color: "var(--ink)", fontWeight: 600 }}>Comércio Exterior</strong> para
-              você importar ou exportar com excelência, agilidade e segurança em todas as etapas.
+              Soluções inteligentes em <strong style={{ color: "var(--ink)", fontWeight: 600 }}>Comércio Exterior e Logística Internacional</strong>.
             </p>
             <div className="hero-meta">
               <a href="#contato" className="cta primary">Solicite uma proposta <I.Arrow className="arrow" /></a>
@@ -160,7 +161,10 @@ function PortVisual() {
 }
 
 // ----- Trust strip -----
-const STRIP_LOCATIONS = ["Santos", "GRU", "VCP", "Itajaí", "Itapoá", "Curitiba", "Rio de Janeiro", "Salvador"];
+const STRIP_LOCATIONS = [
+  "Guarulhos", "Viracopos", "Santos", "Rio de Janeiro", "Curitiba",
+  "Goiânia", "Uruguaiana", "Chuí", "Itajaí", "Florianópolis", "Salvador"
+];
 
 function TrustStrip() {
   return (
@@ -202,21 +206,13 @@ function About() {
             <h2 style={{ marginTop: 18 }}>Soluções completas,<br/>da origem ao destino final.</h2>
             <p className="lede" style={{ marginTop: 22 }}>
               A VMI Assessoria foi criada para oferecer soluções completas em Comércio Exterior,
-              desde a busca por fornecedores até a entrega da mercadoria no destino final —
-              atuando com excelência, agilidade e segurança em todas as etapas dos processos
+              desde a busca por fornecedores até a entrega da mercadoria no destino final.
+              Atua com excelência, agilidade e segurança em todas as etapas dos processos
               de importação e/ou exportação.
             </p>
             <p style={{ marginTop: 16, color: "var(--ink-soft)", fontSize: 16, lineHeight: 1.6, maxWidth: "56ch" }}>
-              Nossa missão é simplificar operações internacionais e gerar resultados para
-              nossos clientes.
+              Nossa missão é simplificar operações internacionais e gerar resultados para os clientes.
             </p>
-            <div className="about-hq">
-              <span className="hq-ico"><I.Pin /></span>
-              <div>
-                <span className="lbl">Matriz</span>
-                Av. Paulista — São Paulo, SP
-              </div>
-            </div>
           </Reveal>
 
           <Reveal as="div" className="about-offices" delay={120}>
@@ -285,6 +281,45 @@ function Services() {
             );
           })}
         </div>
+      </div>
+    </section>
+  );
+}
+
+// ----- Segmentos atendidos -----
+const SEGMENTS = [
+  "Máquinas e equipamentos",
+  "Produtos eletrônicos",
+  "Móveis",
+  "Têxtil",
+  "Autopeças",
+  "Automóveis",
+  "Embarcações",
+  "Produtos químicos",
+  "Cosméticos"
+];
+
+function Segments() {
+  return (
+    <section id="segmentos" className="theme-light alt">
+      <div className="container">
+        <Reveal className="section-head">
+          <div>
+            <span className="eyebrow">Segmentos atendidos</span>
+            <h2 style={{ marginTop: 18 }}>Experiência em diversos<br/>setores da economia.</h2>
+          </div>
+          <p className="lede">
+            Atuamos com empresas de diferentes segmentos, oferecendo soluções personalizadas
+            em comércio exterior para cada operação.
+          </p>
+        </Reveal>
+        <Reveal delay={80}>
+          <div className="segment-chips">
+            {SEGMENTS.map((segment) => (
+              <span className="segment-chip" key={segment}>{segment}</span>
+            ))}
+          </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -460,10 +495,10 @@ function Contact() {
             <Reveal>
               <h3>Canais diretos</h3>
               <div className="contact-list">
-                <a href={`tel:+5511969287540`}>
+                <a href={WHATSAPP} target="_blank" rel="noopener">
                   <span className="ico"><I.Phone /></span>
                   <span>
-                    <span className="lbl">WhatsApp / Telefone</span>
+                    <span className="lbl">WhatsApp</span>
                     {PHONE}
                   </span>
                 </a>
@@ -474,34 +509,21 @@ function Contact() {
                     {EMAIL}
                   </span>
                 </a>
-                <a href={LINKEDIN} target="_blank" rel="noopener">
-                  <span className="ico"><I.Linkedin style={{ width: 15, height: 15 }} /></span>
+                <a href={LINKEDIN} target="_blank" rel="noopener noreferrer">
+                  <span className="ico ico--social"><I.Linkedin /></span>
                   <span>
                     <span className="lbl">LinkedIn</span>
-                    VMI Assessoria Empresarial
+                    {LINKEDIN_HANDLE}
                   </span>
                 </a>
-                <a href={INSTAGRAM} target="_blank" rel="noopener">
-                  <span className="ico"><I.Instagram /></span>
+                <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer">
+                  <span className="ico ico--social"><I.Instagram /></span>
                   <span>
                     <span className="lbl">Instagram</span>
-                    @vmiassessoria
+                    {INSTAGRAM_HANDLE}
                   </span>
                 </a>
               </div>
-            </Reveal>
-
-            <Reveal delay={140}>
-              <a href={WHATSAPP} target="_blank" rel="noopener" className="whatsapp-card" style={{ textDecoration: "none" }}>
-                <div className="qr" aria-hidden="true">
-                  <div className="qr-grid" />
-                  <span className="br" />
-                </div>
-                <div>
-                  <h4>Fale conosco via WhatsApp</h4>
-                  <p>Aponte a câmera do seu celular ou toque para abrir uma conversa direta.</p>
-                </div>
-              </a>
             </Reveal>
           </div>
         </div>
@@ -519,18 +541,17 @@ function Footer() {
           <div className="footer-brand">
             <BrandMark size="footer" />
             <p className="footer-blurb">
-              Conectamos sua empresa ao mundo com excelência, agilidade e segurança em
-              comércio exterior e logística internacional.
+              Soluções inteligentes em Comércio Exterior e Logística Internacional.
             </p>
             <div className="footer-social">
-              <a href={LINKEDIN} target="_blank" rel="noopener" aria-label="LinkedIn"><I.Linkedin style={{ width: 16, height: 16 }} /></a>
-              <a href={INSTAGRAM} target="_blank" rel="noopener" aria-label="Instagram"><I.Instagram /></a>
-              <a href={WHATSAPP} target="_blank" rel="noopener" aria-label="WhatsApp"><I.Wpp style={{ width: 16, height: 16 }} /></a>
+              <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><I.Linkedin /></a>
+              <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><I.Instagram /></a>
+              <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><I.Wpp /></a>
             </div>
           </div>
 
           <div className="footer-contact">
-            <a href={`tel:+5511969287540`} className="fc-item">
+            <a href={WHATSAPP} target="_blank" rel="noopener" className="fc-item">
               <span className="ico"><I.Phone /></span>
               {PHONE}
             </a>
@@ -538,10 +559,6 @@ function Footer() {
               <span className="ico"><I.Mail /></span>
               {EMAIL}
             </a>
-            <span className="fc-item">
-              <span className="ico"><I.Pin /></span>
-              Matriz Av. Paulista · 11 escritórios no Brasil
-            </span>
           </div>
 
           <a href={WHATSAPP} target="_blank" rel="noopener" className="cta primary footer-cta">
@@ -566,6 +583,7 @@ function App() {
       <TrustStrip />
       <About />
       <Services />
+      <Segments />
       <Why />
       <CtaBlock />
       <Contact />

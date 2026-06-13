@@ -483,6 +483,25 @@ section { padding: clamp(72px, 9vw, 128px) 0; position: relative; }
 .ao-chip:hover { border-color: rgba(216,177,90,0.5); background: rgba(216,177,90,0.1); }
 .ao-chip em { font-style: normal; color: #d8b15a; font-size: 10.5px; letter-spacing: 0.12em; margin-left: 4px; vertical-align: 1px; }
 
+.segment-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.segment-chip {
+  font-size: 13.5px;
+  color: var(--ink);
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  transition: border-color .2s, background .2s;
+}
+.segment-chip:hover {
+  border-color: rgba(191, 147, 38, 0.45);
+  background: rgba(216, 177, 90, 0.08);
+}
+
 /* Diferenciais (6-card grid) */
 .why {
   position: relative;
@@ -647,7 +666,8 @@ section { padding: clamp(72px, 9vw, 128px) 0; position: relative; }
   display: inline-flex; align-items: center; justify-content: center;
   flex: none;
 }
-.contact-list .ico svg { width: 16px; height: 16px; }
+.contact-list .ico svg { width: 17px; height: 17px; display: block; }
+.contact-list .ico--social svg { width: 18px; height: 18px; }
 .contact-list .lbl { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
 
 .offices {
@@ -739,19 +759,33 @@ footer {
 }
 .footer-social {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   margin-top: 20px;
 }
 .footer-social a {
-  width: 38px; height: 38px;
+  width: 44px;
+  height: 44px;
   border-radius: 999px;
-  border: 1px solid rgba(216,177,90,0.32);
-  background: rgba(216,177,90,0.08);
+  border: 1px solid rgba(216,177,90,0.35);
+  background: rgba(216,177,90,0.06);
   color: var(--accent);
-  display: inline-flex; align-items: center; justify-content: center;
-  transition: background .2s, transform .2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s, color .2s, border-color .2s, transform .2s;
 }
-.footer-social a:hover { background: var(--accent); color: var(--navy-deep); transform: translateY(-2px); }
+.footer-social a svg {
+  width: 19px;
+  height: 19px;
+  display: block;
+  flex: none;
+}
+.footer-social a:hover {
+  background: var(--accent);
+  color: var(--navy-deep);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
 .footer-contact {
   display: grid;
   gap: 14px;

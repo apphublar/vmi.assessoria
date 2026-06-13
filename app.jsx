@@ -11,6 +11,8 @@ const INSTAGRAM = "https://instagram.com/vmiassessoria";
 const INSTAGRAM_HANDLE = "@vmiassessoria";
 const HQ_STREET = "Av. Paulista";
 const HQ_CITY = "São Paulo - SP";
+const WEB3FORMS_ACCESS_KEY = "3368ec52-50c8-4b66-9763-bcedef691c28";
+const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 
 // ----- Configuração editável (stats, hero, presença) -----
 const SITE_CONFIG = {
@@ -466,6 +468,8 @@ function Contact() {
   const [form, setForm] = useState({ name: "", email: "", company: "", topic: "Importação", msg: "" });
   const [errors, setErrors] = useState({});
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const validate = () => {
     const e = {};
@@ -475,12 +479,44 @@ function Contact() {
     setErrors(e);
     return Object.keys(e).length === 0;
   };
-  const submit = (ev) => {
+  const submit = async (ev) => {
     ev.preventDefault();
     if (!validate()) return;
-    setSent(true);
+    setSending(true);
+    setSubmitError("");
+    try {
+      const res = await fetch(WEB3FORMS_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: `Nova solicitação VMI — ${form.topic}`,
+          name: form.name.trim(),
+          email: form.email.trim(),
+          replyto: form.email.trim(),
+          company: form.company.trim() || "Não informada",
+          topic: form.topic,
+          message: form.msg.trim()
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSent(true);
+      } else {
+        setSubmitError(data.message || "Não foi possível enviar. Tente novamente ou use o WhatsApp.");
+      }
+    } catch {
+      setSubmitError("Erro de conexão. Tente novamente ou fale conosco pelo WhatsApp.");
+    } finally {
+      setSending(false);
+    }
   };
   const setF = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+  const resetForm = () => {
+    setSent(false);
+    setSubmitError("");
+    setForm({ name: "", email: "", company: "", topic: "Importação", msg: "" });
+  };
 
   return (
     <section id="contato" className="theme-light">
@@ -513,13 +549,14 @@ function Contact() {
                 <button
                   className="cta ghost"
                   style={{ marginTop: 22 }}
-                  onClick={() => { setSent(false); setForm({ name: "", email: "", company: "", topic: "Importação", msg: "" }); }}
+                  onClick={resetForm}
                 >
                   Enviar outra mensagem <I.Arrow className="arrow" />
                 </button>
               </div>
             ) : (
               <form onSubmit={submit} noValidate>
+                <input type="checkbox" name="botcheck" className="form-honeypot" tabIndex={-1} autoComplete="off" aria-hidden="true" />
                 <div className="field-row">
                   <div className={`field ${errors.name ? "error" : ""}`}>
                     <label>Nome</label>
@@ -557,7 +594,10 @@ function Contact() {
                 </div>
                 <div className="form-foot">
                   <span className="consent">Ao enviar você concorda em ser contatado pela equipe VMI.</span>
-                  <button type="submit" className="cta primary">Falar com Especialista <I.Arrow className="arrow" /></button>
+                  {submitError && <div className="form-error-msg">{submitError}</div>}
+                  <button type="submit" className="cta primary" disabled={sending}>
+                    {sending ? "Enviando..." : "Falar com Especialista"} {!sending && <I.Arrow className="arrow" />}
+                  </button>
                 </div>
               </form>
             )}

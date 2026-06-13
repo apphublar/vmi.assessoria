@@ -189,11 +189,14 @@ function SocialProof() {
   return (
     <section className="social-proof" id="resultados">
       <div className="container">
-        <Reveal className="section-head section-head--center">
+        <Reveal className="section-head">
           <div>
             <span className="eyebrow">Resultados</span>
-            <h2 style={{ marginTop: 18 }}>Experiência que gera resultados.</h2>
+            <h2 style={{ marginTop: 18 }}>Experiência que<br/>gera resultados.</h2>
           </div>
+          <p className="lede">
+            Números que refletem nossa atuação em comércio exterior e logística internacional.
+          </p>
         </Reveal>
         <div className="stats-grid">
           {SITE_CONFIG.stats.map(({ value, label }, i) => (

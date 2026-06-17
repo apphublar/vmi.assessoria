@@ -17,7 +17,7 @@ const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 // ----- Configuração editável (stats, hero, presença) -----
 const SITE_CONFIG = {
   stats: [
-    { value: "+500", label: "Operações realizadas" },
+    { value: "+30", label: "Anos de experiência" },
     { value: "+20", label: "Países atendidos" },
     { value: "+12", label: "Escritórios no Brasil" },
     { value: "100%", label: "Foco em conformidade e segurança" }
@@ -288,7 +288,7 @@ const SERVICES = [
   ["Shield", "Seguro internacional", "Proteção da sua mercadoria durante todo o trajeto internacional."],
   ["Box", "Transporte Nacional", "Movimentação da carga em território nacional com rastreabilidade."],
   ["Dollar", "Ex tarifário", "Redução de alíquotas de importação para bens sem similar nacional."],
-  ["Globe", "Regimes especiais", "Aplicação de drawback, RECOF e demais regimes aduaneiros vantajosos."],
+  ["Globe", "Regimes especiais", "Aplicação de drawback, Entreposto e demais regimes aduaneiros vantajosos."],
   ["Dollar", "Benefícios fiscais e incentivos", "Identificação de incentivos fiscais estaduais e federais aplicáveis."]
 ];
 

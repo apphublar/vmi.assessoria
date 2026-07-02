@@ -11,8 +11,7 @@ const INSTAGRAM = "https://instagram.com/vmiassessoria";
 const INSTAGRAM_HANDLE = "@vmiassessoria";
 const HQ_STREET = "Av. Paulista";
 const HQ_CITY = "São Paulo - SP";
-const WEB3FORMS_ACCESS_KEY = "3368ec52-50c8-4b66-9763-bcedef691c28";
-const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
+const CONTACT_API = "/api/contact";
 
 // ----- Configuração editável (stats, hero, presença) -----
 const SITE_CONFIG = {
@@ -482,25 +481,25 @@ function Contact() {
   const submit = async (ev) => {
     ev.preventDefault();
     if (!validate()) return;
+    const formEl = ev.currentTarget;
+    if (formEl.botcheck?.checked) return;
+
     setSending(true);
     setSubmitError("");
     try {
-      const res = await fetch(WEB3FORMS_ENDPOINT, {
+      const res = await fetch(CONTACT_API, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
-          subject: `Nova solicitação VMI — ${form.topic}`,
           name: form.name.trim(),
           email: form.email.trim(),
-          replyto: form.email.trim(),
-          company: form.company.trim() || "Não informada",
+          company: form.company.trim(),
           topic: form.topic,
           message: form.msg.trim()
         })
       });
       const data = await res.json();
-      if (data.success) {
+      if (res.ok && data.success) {
         setSent(true);
       } else {
         setSubmitError(data.message || "Não foi possível enviar. Tente novamente ou use o WhatsApp.");

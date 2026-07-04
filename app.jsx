@@ -531,12 +531,6 @@ function Contact() {
           </p>
         </Reveal>
 
-        <Reveal delay={60}>
-          <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="cta primary contact-cta-top">
-            Falar com Especialista <I.Arrow className="arrow" />
-          </a>
-        </Reveal>
-
         <div className="contact-grid">
           <Reveal as="div" className="contact-card">
             {sent ? (

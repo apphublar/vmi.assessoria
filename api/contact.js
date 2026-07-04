@@ -1,7 +1,5 @@
 const { Resend } = require("resend");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, "&amp;")
@@ -21,6 +19,8 @@ module.exports = async (req, res) => {
       message: "Serviço de e-mail não configurado. Configure RESEND_API_KEY na Vercel."
     });
   }
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
   const { name, email, company, topic, message, botcheck } = req.body || {};
 
@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
   }
 
   const to = process.env.CONTACT_TO_EMAIL || "operacional@vmiass.com";
-  const from = process.env.RESEND_FROM_EMAIL || "VMI Assessoria <onboarding@resend.dev>";
+  const from = process.env.RESEND_FROM_EMAIL || "VMI Assessoria <operacional@vmiass.com>";
   const subject = `Nova solicitação VMI — ${trimmedTopic}`;
 
   const html = `
@@ -71,7 +71,11 @@ module.exports = async (req, res) => {
     });
 
     if (error) {
-      console.error("Resend error:", error);
+      console.error("Resend error:", {
+        name: error.name,
+        message: error.message,
+        statusCode: error.statusCode,
+      });
       return res.status(500).json({
         success: false,
         message: "Não foi possível enviar. Tente novamente ou use o WhatsApp."

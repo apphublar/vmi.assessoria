@@ -39,39 +39,42 @@ const SITE_CONFIG = {
       type: "video",
       src: "assets/premiacao/ctf-awards.mp4",
       caption: "Cerimônia do CTF Awards",
-      featured: true
+      orient: "portrait"
     },
     {
       type: "image",
       src: "assets/premiacao/ctf-trofeu.png",
       alt: "Equipe da VMI com o troféu do CTF Awards na categoria Innovation",
       caption: "Categoria Innovation",
-      wide: true
+      orient: "landscape"
     },
     {
       type: "image",
       src: "assets/premiacao/ctf-entrega.png",
       alt: "Momento da entrega do CTF Awards no palco",
-      caption: "Entrega do prêmio"
+      caption: "Entrega do prêmio",
+      orient: "landscape"
     },
     {
       type: "image",
       src: "assets/premiacao/ctf-equipe.png",
       alt: "Equipe da VMI Assessoria no Comex Tech Forum",
-      caption: "Equipe VMI no evento"
+      caption: "Equipe VMI no evento",
+      orient: "landscape"
     },
     {
       type: "image",
       src: "assets/premiacao/ctf-palestra.png",
       alt: "Isabella Martins no palco do Comex Tech Forum",
-      caption: "No palco do CTF"
+      caption: "No palco do CTF",
+      orient: "portrait"
     },
     {
       type: "image",
       src: "assets/premiacao/ctf-forum.png",
       alt: "Registro da VMI no Comex Tech Forum",
       caption: "Comex Tech Forum",
-      span2: true
+      orient: "portrait"
     }
   ]
 };
@@ -315,27 +318,65 @@ function About() {
 }
 
 // ----- Reconhecimento (premiação dos sócios) -----
+function AwardMedia({ item, active, videoRef, onPlay, onPause, onEnded }) {
+  if (item.type === "video") {
+    return (
+      <video
+        ref={active ? videoRef : undefined}
+        src={item.src}
+        controls={!!active}
+        muted={!active}
+        playsInline
+        preload="metadata"
+        title={item.caption}
+        onPlay={active ? onPlay : undefined}
+        onPause={active ? onPause : undefined}
+        onEnded={active ? onEnded : undefined}
+      >
+        Seu navegador não reproduz vídeo.
+      </video>
+    );
+  }
+  return <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />;
+}
+
 function Award() {
   const media = SITE_CONFIG.awardMedia;
-  const photos = media.filter((item) => item.type === "image");
-  const [active, setActive] = useState(null);
+  const total = media.length;
+  const [index, setIndex] = useState(0);
+  const [dir, setDir] = useState(1);
+  const [hover, setHover] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(false);
+  const videoRef = useRef(null);
+
+  const goTo = (nextIndex, direction) => {
+    const target = (nextIndex + total) % total;
+    if (target === index) return;
+    if (videoRef.current) {
+      videoRef.current.pause();
+      setVideoPlaying(false);
+    }
+    setDir(direction);
+    setIndex(target);
+  };
+
+  const prev = () => goTo(index - 1, -1);
+  const next = () => goTo(index + 1, 1);
 
   useEffect(() => {
-    if (active === null) return undefined;
-    const onKey = (ev) => {
-      if (ev.key === "Escape") setActive(null);
-      if (ev.key === "ArrowRight") setActive((i) => (i + 1) % photos.length);
-      if (ev.key === "ArrowLeft") setActive((i) => (i - 1 + photos.length) % photos.length);
-    };
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [active, photos.length]);
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (hover || videoPlaying || reduce) return undefined;
+    const timer = window.setInterval(() => {
+      setDir(1);
+      setIndex((current) => (current + 1) % total);
+    }, 6000);
+    return () => window.clearInterval(timer);
+  }, [hover, videoPlaying, total]);
 
-  const current = active !== null ? photos[active] : null;
+  const left = media[(index - 1 + total) % total];
+  const center = media[index];
+  const right = media[(index + 1) % total];
+  const motion = dir === 1 ? "award-slide--from-right" : "award-slide--from-left";
 
   return (
     <section id="reconhecimento" className="award">
@@ -356,87 +397,75 @@ function Award() {
           <span>Categoria Innovation</span>
         </div>
 
-        <div className="award-gallery">
-          {media.map((item, i) => {
-            const classes = [
-              "award-item",
-              item.featured ? "award-item--featured" : "",
-              item.wide ? "award-item--wide" : "",
-              item.span2 ? "award-item--span2" : "",
-              item.type === "video" ? "award-item--video" : ""
-            ].filter(Boolean).join(" ");
+        <div
+          className={`award-stage award-stage--${center.type === "video" ? "video" : center.orient}`}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+        >
+          <button
+            type="button"
+            className={`award-slide award-slide--side award-slide--${left.orient}${left.type === "video" ? " award-slide--video" : ""} ${motion}`}
+            onClick={prev}
+            aria-label={`Ver anterior: ${left.caption}`}
+          >
+            <AwardMedia item={left} />
+            <span className="award-slide__veil" aria-hidden="true" />
+          </button>
 
-            if (item.type === "video") {
-              return (
-                <Reveal key={item.src} as="figure" className={classes} delay={i * 70}>
-                  <video
-                    src={item.src}
-                    controls
-                    playsInline
-                    preload="metadata"
-                    title={item.caption}
-                  >
-                    Seu navegador não reproduz vídeo.
-                  </video>
-                  <figcaption className="award-badge">{item.caption}</figcaption>
-                </Reveal>
-              );
-            }
+          <figure
+            key={`${center.src}-${index}`}
+            className={`award-slide award-slide--center award-slide--${center.orient}${center.type === "video" ? " award-slide--video" : ""} ${motion}`}
+          >
+            <AwardMedia
+              item={center}
+              active
+              videoRef={videoRef}
+              onPlay={() => setVideoPlaying(true)}
+              onPause={() => setVideoPlaying(false)}
+              onEnded={() => {
+                setVideoPlaying(false);
+                setDir(1);
+                setIndex((current) => (current + 1) % total);
+              }}
+            />
+            <figcaption className={center.type === "video" ? "award-badge" : "award-caption"}>
+              {center.caption}
+            </figcaption>
+          </figure>
 
-            const photoIndex = photos.indexOf(item);
-            return (
-              <Reveal
+          <button
+            type="button"
+            className={`award-slide award-slide--side award-slide--${right.orient}${right.type === "video" ? " award-slide--video" : ""} ${motion}`}
+            onClick={next}
+            aria-label={`Ver próxima: ${right.caption}`}
+          >
+            <AwardMedia item={right} />
+            <span className="award-slide__veil" aria-hidden="true" />
+          </button>
+        </div>
+
+        <div className="award-controls">
+          <button type="button" className="award-controls__nav" onClick={prev} aria-label="Anterior">
+            <I.Arrow style={{ transform: "rotate(180deg)" }} />
+          </button>
+          <div className="award-dots" role="tablist" aria-label="Fotos e vídeo do CTF Awards">
+            {media.map((item, i) => (
+              <button
                 key={item.src}
-                as="button"
                 type="button"
-                className={classes}
-                delay={i * 70}
-                onClick={() => setActive(photoIndex)}
-                aria-label={`Ampliar foto: ${item.caption}`}
-              >
-                <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
-                <span className="award-caption">{item.caption}</span>
-              </Reveal>
-            );
-          })}
+                role="tab"
+                aria-selected={i === index}
+                className={`award-dot ${i === index ? "is-active" : ""}`}
+                onClick={() => goTo(i, i > index ? 1 : -1)}
+                aria-label={item.caption}
+              />
+            ))}
+          </div>
+          <button type="button" className="award-controls__nav" onClick={next} aria-label="Próxima">
+            <I.Arrow />
+          </button>
         </div>
       </div>
-
-      {current && (
-        <div className="award-lightbox" role="dialog" aria-modal="true" aria-label={current.caption}>
-          <button type="button" className="award-lightbox__backdrop" onClick={() => setActive(null)} aria-label="Fechar" />
-          <div className="award-lightbox__frame">
-            <button type="button" className="award-lightbox__close" onClick={() => setActive(null)} aria-label="Fechar">
-              <I.Close />
-            </button>
-            {photos.length > 1 && (
-              <button
-                type="button"
-                className="award-lightbox__nav award-lightbox__nav--prev"
-                onClick={() => setActive((i) => (i - 1 + photos.length) % photos.length)}
-                aria-label="Foto anterior"
-              >
-                <I.Arrow />
-              </button>
-            )}
-            <img src={current.src} alt={current.alt} />
-            {photos.length > 1 && (
-              <button
-                type="button"
-                className="award-lightbox__nav award-lightbox__nav--next"
-                onClick={() => setActive((i) => (i + 1) % photos.length)}
-                aria-label="Próxima foto"
-              >
-                <I.Arrow />
-              </button>
-            )}
-            <p className="award-lightbox__caption">
-              {current.caption}
-              <span>{active + 1} / {photos.length}</span>
-            </p>
-          </div>
-        </div>
-      )}
     </section>
   );
 }

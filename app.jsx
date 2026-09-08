@@ -10,7 +10,7 @@ const LINKEDIN_HANDLE = "vmi-assessoria-empresarial-ltda";
 const INSTAGRAM = "https://instagram.com/vmiassessoria";
 const INSTAGRAM_HANDLE = "@vmiassessoria";
 const HQ_STREET = "Av. Paulista";
-const HQ_CITY = "São Paulo - SP";
+const HQ_CITY = "São Paulo, SP";
 const CONTACT_API = "/api/contact";
 
 // ----- Configuração editável (stats, hero, presença) -----
@@ -33,6 +33,46 @@ const SITE_CONFIG = {
     ["Stamp", "Execução aduaneira e logística", "Operacionalizamos importação, exportação e toda a cadeia com precisão."],
     ["Shield", "Acompanhamento completo", "Monitoramos cada etapa junto à Receita Federal e órgãos anuentes."],
     ["Hands", "Entrega e suporte contínuo", "Garantimos a entrega no destino final com suporte permanente à operação."]
+  ],
+  awardMedia: [
+    {
+      type: "video",
+      src: "assets/premiacao/ctf-awards.mp4",
+      caption: "Cerimônia do CTF Awards",
+      featured: true
+    },
+    {
+      type: "image",
+      src: "assets/premiacao/ctf-trofeu.png",
+      alt: "Equipe da VMI com o troféu do CTF Awards na categoria Innovation",
+      caption: "Categoria Innovation",
+      wide: true
+    },
+    {
+      type: "image",
+      src: "assets/premiacao/ctf-entrega.png",
+      alt: "Momento da entrega do CTF Awards no palco",
+      caption: "Entrega do prêmio"
+    },
+    {
+      type: "image",
+      src: "assets/premiacao/ctf-equipe.png",
+      alt: "Equipe da VMI Assessoria no Comex Tech Forum",
+      caption: "Equipe VMI no evento"
+    },
+    {
+      type: "image",
+      src: "assets/premiacao/ctf-palestra.png",
+      alt: "Isabella Martins no palco do Comex Tech Forum",
+      caption: "No palco do CTF"
+    },
+    {
+      type: "image",
+      src: "assets/premiacao/ctf-forum.png",
+      alt: "Registro da VMI no Comex Tech Forum",
+      caption: "Comex Tech Forum",
+      span2: true
+    }
   ]
 };
 
@@ -104,6 +144,7 @@ function Nav() {
   }, []);
   const links = [
     ["Quem Somos", "#quem-somos"],
+    ["Reconhecimento", "#reconhecimento"],
     ["Serviços", "#servicos"],
     ["Diferenciais", "#diferenciais"],
     ["Contato", "#contato"]
@@ -228,7 +269,7 @@ function TrustStrip() {
 
 // ----- Quem Somos (About) -----
 const OFFICES = [
-  ["São Paulo", "SP", "Matriz · Av. Paulista"],
+  ["São Paulo", "SP", "Matriz, Av. Paulista"],
   ["Guarulhos", "SP"], ["Viracopos", "SP"], ["Santos", "SP"], ["Rio de Janeiro", "RJ"],
   ["Curitiba", "PR"], ["Goiânia", "GO"], ["Uruguaiana", "RS"], ["Chuí", "RS"],
   ["Itajaí", "SC"], ["Florianópolis", "SC"], ["Salvador", "BA"]
@@ -269,6 +310,133 @@ function About() {
           </Reveal>
         </div>
       </div>
+    </section>
+  );
+}
+
+// ----- Reconhecimento (premiação dos sócios) -----
+function Award() {
+  const media = SITE_CONFIG.awardMedia;
+  const photos = media.filter((item) => item.type === "image");
+  const [active, setActive] = useState(null);
+
+  useEffect(() => {
+    if (active === null) return undefined;
+    const onKey = (ev) => {
+      if (ev.key === "Escape") setActive(null);
+      if (ev.key === "ArrowRight") setActive((i) => (i + 1) % photos.length);
+      if (ev.key === "ArrowLeft") setActive((i) => (i - 1 + photos.length) % photos.length);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [active, photos.length]);
+
+  const current = active !== null ? photos[active] : null;
+
+  return (
+    <section id="reconhecimento" className="award">
+      <div className="container">
+        <Reveal className="section-head">
+          <div>
+            <span className="eyebrow">Reconhecimento</span>
+            <h2 style={{ marginTop: 18 }}>Premiados no CTF Awards.</h2>
+          </div>
+          <p className="lede">
+            Na categoria Innovation, a VMI Assessoria foi reconhecida por ser inovadora
+            no comércio exterior. É um prêmio que reforça nossa forma de conduzir operações
+            internacionais com inteligência e precisão.
+          </p>
+        </Reveal>
+        <div className="award-meta" aria-label="Detalhes da premiação">
+          <span>CTF Awards</span>
+          <span>Categoria Innovation</span>
+        </div>
+
+        <div className="award-gallery">
+          {media.map((item, i) => {
+            const classes = [
+              "award-item",
+              item.featured ? "award-item--featured" : "",
+              item.wide ? "award-item--wide" : "",
+              item.span2 ? "award-item--span2" : "",
+              item.type === "video" ? "award-item--video" : ""
+            ].filter(Boolean).join(" ");
+
+            if (item.type === "video") {
+              return (
+                <Reveal key={item.src} as="figure" className={classes} delay={i * 70}>
+                  <video
+                    src={item.src}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    title={item.caption}
+                  >
+                    Seu navegador não reproduz vídeo.
+                  </video>
+                  <figcaption className="award-badge">{item.caption}</figcaption>
+                </Reveal>
+              );
+            }
+
+            const photoIndex = photos.indexOf(item);
+            return (
+              <Reveal
+                key={item.src}
+                as="button"
+                type="button"
+                className={classes}
+                delay={i * 70}
+                onClick={() => setActive(photoIndex)}
+                aria-label={`Ampliar foto: ${item.caption}`}
+              >
+                <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+                <span className="award-caption">{item.caption}</span>
+              </Reveal>
+            );
+          })}
+        </div>
+      </div>
+
+      {current && (
+        <div className="award-lightbox" role="dialog" aria-modal="true" aria-label={current.caption}>
+          <button type="button" className="award-lightbox__backdrop" onClick={() => setActive(null)} aria-label="Fechar" />
+          <div className="award-lightbox__frame">
+            <button type="button" className="award-lightbox__close" onClick={() => setActive(null)} aria-label="Fechar">
+              <I.Close />
+            </button>
+            {photos.length > 1 && (
+              <button
+                type="button"
+                className="award-lightbox__nav award-lightbox__nav--prev"
+                onClick={() => setActive((i) => (i - 1 + photos.length) % photos.length)}
+                aria-label="Foto anterior"
+              >
+                <I.Arrow />
+              </button>
+            )}
+            <img src={current.src} alt={current.alt} />
+            {photos.length > 1 && (
+              <button
+                type="button"
+                className="award-lightbox__nav award-lightbox__nav--next"
+                onClick={() => setActive((i) => (i + 1) % photos.length)}
+                aria-label="Próxima foto"
+              >
+                <I.Arrow />
+              </button>
+            )}
+            <p className="award-lightbox__caption">
+              {current.caption}
+              <span>{active + 1} / {photos.length}</span>
+            </p>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -453,7 +621,7 @@ function CtaBlock() {
             </a>
             <a href="#contato" className="cta ghost">Solicitar proposta por e-mail <I.Arrow className="arrow" /></a>
             <span style={{ fontSize: 12.5, color: "var(--muted)", marginTop: 6, letterSpacing: "0.04em" }}>
-              Atendimento Seg–Sex · 09h–18h
+              Atendimento de segunda a sexta, das 9h às 18h
             </span>
           </div>
         </Reveal>
@@ -526,7 +694,7 @@ function Contact() {
             <h2 style={{ marginTop: 18 }}>Solicite uma análise<br/>da sua operação</h2>
           </div>
           <p className="lede">
-            Conte um pouco sobre sua operação — retornamos em até 1 dia útil com uma
+            Conte um pouco sobre sua operação. Retornamos em até 1 dia útil com uma
             análise inicial e os próximos passos.
           </p>
         </Reveal>
@@ -702,6 +870,7 @@ function App() {
       <SocialProof />
       <TrustStrip />
       <About />
+      <Award />
       <Services />
       <HowItWorks />
       <Segments />

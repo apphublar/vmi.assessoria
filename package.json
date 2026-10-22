@@ -2,7 +2,7 @@
   "name": "vmi-assessoria",
   "private": true,
   "scripts": {
-    "build": "esbuild icons.jsx --outfile=assets/icons.js --format=iife --jsx=transform --target=es2018 && esbuild app.jsx --outfile=assets/app.js --format=iife --jsx=transform --target=es2018"
+    "build": "esbuild icons.jsx --outfile=assets/icons.js --format=iife --jsx=transform --target=es2018 && esbuild app.jsx --outfile=assets/app.js --format=iife --jsx=transform --target=es2018 && node scripts/publish-static.js"
   },
   "dependencies": {
     "@vercel/blob": "^2.8.2",

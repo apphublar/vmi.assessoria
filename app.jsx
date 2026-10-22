@@ -825,34 +825,35 @@ function Contact() {
             ) : (
               <form onSubmit={submit} noValidate>
                 <input type="checkbox" name="botcheck" className="form-honeypot" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+                <p className="form-required-note">Campos com * são obrigatórios.</p>
                 <div className="field-row">
-                  <div className={`field ${errors.name ? "error" : ""}`}>
+                  <div className={`field required ${errors.name ? "error" : ""}`}>
                     <label>Nome</label>
-                    <input type="text" value={form.name} onChange={setF("name")} placeholder="Seu nome" />
+                    <input type="text" value={form.name} onChange={setF("name")} placeholder="Seu nome" aria-required="true" />
                     <span className="err">{errors.name || ""}</span>
                   </div>
-                  <div className={`field ${errors.email ? "error" : ""}`}>
+                  <div className={`field required ${errors.email ? "error" : ""}`}>
                     <label>E-mail</label>
-                    <input type="email" value={form.email} onChange={setF("email")} placeholder="voce@empresa.com" />
+                    <input type="email" value={form.email} onChange={setF("email")} placeholder="voce@empresa.com" aria-required="true" />
                     <span className="err">{errors.email || ""}</span>
                   </div>
                 </div>
                 <div className="field-row">
-                  <div className={`field ${errors.company ? "error" : ""}`}>
+                  <div className={`field required ${errors.company ? "error" : ""}`}>
                     <label>Empresa</label>
-                    <input type="text" value={form.company} onChange={setF("company")} placeholder="Razão social" />
+                    <input type="text" value={form.company} onChange={setF("company")} placeholder="Razão social" aria-required="true" />
                     <span className="err">{errors.company || ""}</span>
                   </div>
-                  <div className={`field ${errors.cnpj ? "error" : ""}`}>
+                  <div className={`field required ${errors.cnpj ? "error" : ""}`}>
                     <label>CNPJ</label>
-                    <input type="text" inputMode="numeric" value={form.cnpj} onChange={(e) => setForm({ ...form, cnpj: formatCnpj(e.target.value) })} placeholder="00.000.000/0000-00" />
+                    <input type="text" inputMode="numeric" value={form.cnpj} onChange={(e) => setForm({ ...form, cnpj: formatCnpj(e.target.value) })} placeholder="00.000.000/0000-00" aria-required="true" />
                     <span className="err">{errors.cnpj || ""}</span>
                   </div>
                 </div>
                 <div className="field-row">
-                  <div className="field">
+                  <div className="field required">
                     <label>Tipo de operação</label>
-                    <select value={form.topic} onChange={setF("topic")}>
+                    <select value={form.topic} onChange={setF("topic")} aria-required="true">
                       <option>Importação</option>
                       <option>Exportação</option>
                       <option>Assessoria aduaneira</option>
@@ -862,21 +863,21 @@ function Contact() {
                       <option>Outro</option>
                     </select>
                   </div>
-                  <div className={`field ${errors.product ? "error" : ""}`}>
+                  <div className={`field required ${errors.product ? "error" : ""}`}>
                     <label>Produto</label>
-                    <input type="text" value={form.product} onChange={setF("product")} placeholder="Nome da mercadoria" />
+                    <input type="text" value={form.product} onChange={setF("product")} placeholder="Nome da mercadoria" aria-required="true" />
                     <span className="err">{errors.product || ""}</span>
                   </div>
                 </div>
                 <div className="field-row">
-                  <div className={`field ${errors.ncm ? "error" : ""}`}>
+                  <div className={`field required ${errors.ncm ? "error" : ""}`}>
                     <label>NCM</label>
-                    <input type="text" value={form.ncm} onChange={setF("ncm")} placeholder="Ex.: 8471.30.12 ou Não sei informar" />
+                    <input type="text" value={form.ncm} onChange={setF("ncm")} placeholder="Ex.: 8471.30.12 ou Não sei informar" aria-required="true" />
                     <span className="err">{errors.ncm || ""}</span>
                   </div>
-                  <div className={`field ${errors.volume ? "error" : ""}`}>
+                  <div className={`field required ${errors.volume ? "error" : ""}`}>
                     <label>Volume mensal estimado</label>
-                    <select value={form.volume} onChange={setF("volume")}>
+                    <select value={form.volume} onChange={setF("volume")} aria-required="true">
                       {VOLUME_OPTIONS.map((option) => (
                         <option key={option.value || "empty"} value={option.value}>{option.label}</option>
                       ))}
@@ -884,20 +885,20 @@ function Contact() {
                     <span className="err">{errors.volume || ""}</span>
                   </div>
                 </div>
-                <div className={`field ${errors.cargo ? "error" : ""}`}>
+                <div className={`field required ${errors.cargo ? "error" : ""}`}>
                   <label>Volume da carga</label>
-                  <input type="text" value={form.cargo} onChange={setF("cargo")} placeholder="Quantidade da carga" />
+                  <input type="text" value={form.cargo} onChange={setF("cargo")} placeholder="Quantidade da carga" aria-required="true" />
                   <span className="hint">Sugestão: 1 contêiner, 100 caixas, 10 pallets.</span>
                   <span className="err">{errors.cargo || ""}</span>
                 </div>
                 <div className={`field ${errors.phone ? "error" : ""}`}>
-                  <label>WhatsApp</label>
+                  <label>WhatsApp opcional</label>
                   <input type="tel" value={form.phone} onChange={setF("phone")} placeholder="Opcional, com DDD" />
                   <span className="err">{errors.phone || ""}</span>
                 </div>
-                <div className={`field ${errors.msg ? "error" : ""}`}>
+                <div className={`field required ${errors.msg ? "error" : ""}`}>
                   <label>Conte sobre sua necessidade</label>
-                  <textarea value={form.msg} onChange={setF("msg")} placeholder="Origem, destino, prazos e o que mais a equipe precisa saber." />
+                  <textarea value={form.msg} onChange={setF("msg")} placeholder="Origem, destino, prazos e o que mais a equipe precisa saber." aria-required="true" />
                   <span className="err">{errors.msg || ""}</span>
                 </div>
                 <div className="form-foot">

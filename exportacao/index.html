@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Exportação | VMI Assessoria Empresarial</title>
+  <meta name="description" content="Assessoria em exportação: estruturação da operação, DUE, documentação e logística até o comprador no exterior." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.vmiass.com/exportacao/" />
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/favicon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:site_name" content="VMI Assessoria Empresarial" />
+  <meta property="og:title" content="Exportação | VMI Assessoria Empresarial" />
+  <meta property="og:description" content="Assessoria em exportação: estruturação da operação, DUE, documentação e logística até o comprador no exterior." />
+  <meta property="og:url" content="https://www.vmiass.com/exportacao/" />
+  <meta property="og:image" content="https://www.vmiass.com/assets/hero-porto.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Exportação | VMI Assessoria Empresarial" />
+  <meta name="twitter:description" content="Assessoria em exportação: estruturação da operação, DUE, documentação e logística até o comprador no exterior." />
+  <meta name="twitter:image" content="https://www.vmiass.com/assets/hero-porto.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,600&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "Exportação",
+    "areaServed": "BR",
+    "url": "https://www.vmiass.com/exportacao/",
+    "description": "Assessoria em exportação: estruturação da operação, DUE, documentação e logística até o comprador no exterior.",
+    "provider": {
+      "@type": "Organization",
+      "name": "VMI Assessoria Empresarial LTDA",
+      "url": "https://www.vmiass.com/"
+    }
+  }
+  </script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    var vmiConsent = "denied";
+    try { vmiConsent = localStorage.getItem("vmi-consent") === "granted" ? "granted" : "denied"; } catch (e) {}
+    gtag("consent", "default", {
+      ad_storage: vmiConsent,
+      analytics_storage: vmiConsent,
+      ad_user_data: vmiConsent,
+      ad_personalization: vmiConsent
+    });
+  </script>
+  <script src="/tracking.js"></script>
+</head>
+<body data-page="exportacao">
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KSZNTP93" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <main id="conteudo" class="conteudo-indexavel">
+    <p><a href="/">VMI Assessoria Empresarial</a></p>
+    <h1>Exportação estruturada para vender no exterior com previsibilidade.</h1>
+    <p>Organizamos a saída da mercadoria, a documentação e a logística para a operação chegar ao comprador com conformidade.</p>
+    <h2>Estruturação da exportação</h2>
+    <p>Avaliamos produto, destino, documentos e a melhor forma de operar.</p>
+    <h2>DUE e documentos</h2>
+    <p>Registro da declaração única de exportação e apoio na documentação comercial.</p>
+    <h2>Logística de saída</h2>
+    <p>Cotação de frete, embarque e coordenação até o destino.</p>
+    <h2>Conformidade</h2>
+    <p>A operação segue a legislação aduaneira e os órgãos competentes.</p>
+    <h2>Contato</h2>
+    <p>Solicite uma análise da sua operação. Retornamos em até 1 dia útil.</p>
+    <p>WhatsApp: <a href="https://wa.me/5511969287540">(11) 96928-7540</a></p>
+    <p>E-mail: <a href="mailto:operacional@vmiass.com">operacional@vmiass.com</a></p>
+    <p>Av. Paulista, São Paulo, SP. Atendimento de segunda a sexta, das 9h às 18h.</p>
+    <p>Veja também <a href="/importacao/">importação</a> e <a href="/despacho-aduaneiro/">despacho aduaneiro</a>.</p>
+  </main>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+  <script src="/assets/icons.js" defer></script>
+  <script src="/assets/app.js" defer></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var conteudo = document.getElementById("conteudo");
+      if (conteudo && window.VMIApp) conteudo.remove();
+      if (!window.VMIApp || !window.ReactDOM) return;
+      ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(window.VMIApp));
+    });
+  </script>
+</body>
+</html>

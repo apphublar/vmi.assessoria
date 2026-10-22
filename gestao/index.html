@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Gestão de leads | VMI Assessoria</title>
+  <style>
+    :root { color-scheme: light; --navy: #0c2440; --ink: #142033; --muted: #5c6b7a; --line: #e4dccb; --paper: #f6f3ec; --gold: #d8b15a; --white: #fff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", Helvetica, Arial, sans-serif; background: var(--paper); color: var(--ink); }
+    header { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 22px; background: var(--navy); color: #f4efe4; }
+    header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+    header p { margin: 4px 0 0; color: #c9bfae; font-size: 13px; }
+    button, select, textarea, input { font: inherit; }
+    button { cursor: pointer; }
+    .ghost, .primary { border-radius: 999px; padding: 10px 16px; border: 1px solid transparent; }
+    .primary { background: var(--gold); color: var(--navy); font-weight: 650; }
+    .ghost { background: transparent; color: inherit; border-color: currentColor; }
+    header .ghost { color: #f4efe4; }
+    main { width: min(1100px, calc(100% - 28px)); margin: 22px auto 48px; }
+    .login { width: min(420px, 100%); margin: 12vh auto; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 28px; }
+    .login h2 { margin: 0 0 8px; }
+    .login p { margin: 0 0 18px; color: var(--muted); }
+    label { display: block; font-size: 13px; margin-bottom: 6px; }
+    input, select, textarea { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; background: #fff; color: var(--ink); }
+    textarea { min-height: 110px; resize: vertical; }
+    .error { color: #8d2b2b; font-size: 14px; min-height: 1.2em; margin: 8px 0 0; }
+    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .toolbar button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 8px 12px; color: var(--navy); }
+    .toolbar button.is-on { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .layout { display: grid; grid-template-columns: 320px 1fr; gap: 16px; align-items: start; }
+    .list, .detail { background: #fff; border: 1px solid var(--line); border-radius: 16px; }
+    .list { max-height: 72vh; overflow: auto; }
+    .lead-btn { display: block; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--line); background: #fff; padding: 14px 14px; }
+    .lead-btn.is-on { background: #f8f1df; }
+    .lead-btn strong { display: block; }
+    .lead-btn span { color: var(--muted); font-size: 13px; }
+    .detail { padding: 18px; }
+    .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; margin: 12px 0 16px; }
+    .meta span { display: block; color: var(--muted); font-size: 12px; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .actions a, .actions button { text-decoration: none; }
+    .empty { padding: 28px 16px; color: var(--muted); }
+    @media (max-width: 800px) {
+      .layout { grid-template-columns: 1fr; }
+      .list { max-height: 40vh; }
+      .meta { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>VMI Gestão</h1>
+      <p>Leads qualificados do site</p>
+    </div>
+    <button id="logout" class="ghost" type="button" hidden>Sair</button>
+  </header>
+  <main>
+    <form id="login" class="login">
+      <h2>Entrar</h2>
+      <p>Área da equipe. Os contatos qualificados do formulário aparecem aqui.</p>
+      <label for="password">Senha</label>
+      <input id="password" type="password" autocomplete="current-password" required />
+      <p id="login-error" class="error"></p>
+      <button class="primary" type="submit">Entrar</button>
+    </form>
+    <section id="board" hidden>
+      <div class="toolbar" id="filters"></div>
+      <div class="layout">
+        <div class="list" id="list"></div>
+        <div class="detail" id="detail"><p class="empty">Selecione um lead.</p></div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const STATUSES = [
+      ["", "Todos"],
+      ["novo", "Novos"],
+      ["contato", "Em contato"],
+      ["proposta", "Proposta"],
+      ["cliente", "Clientes"],
+      ["perdido", "Perdidos"]
+    ];
+    const STATUS_LABEL = { novo: "Novo", contato: "Em contato", proposta: "Proposta", cliente: "Cliente", perdido: "Perdido" };
+    const PAGE_LABEL = { home: "início", importacao: "importação", exportacao: "exportação", "despacho-aduaneiro": "despacho aduaneiro" };
+    const loginForm = document.getElementById("login");
+    const board = document.getElementById("board");
+    const logoutBtn = document.getElementById("logout");
+    const listEl = document.getElementById("list");
+    const detailEl = document.getElementById("detail");
+    const filtersEl = document.getElementById("filters");
+    let leads = [];
+    let filter = "";
+    let selected = "";
+
+    function text(value) { return value || "Não informado"; }
+    function when(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "";
+      return date.toLocaleString("pt-BR");
+    }
+    function waHref(lead) {
+      const digits = String(lead.phone || "").replace(/\D/g, "");
+      if (digits.length < 10) return "";
+      const full = digits.startsWith("55") ? digits : "55" + digits;
+      const message = "Olá " + lead.name + ", aqui é da VMI Assessoria. Recebemos o contato da " + lead.company + ".";
+      return "https://wa.me/" + full + "?text=" + encodeURIComponent(message);
+    }
+    async function api(method, body) {
+      const res = await fetch("/api/gestao", {
+        method,
+        credentials: "same-origin",
+        headers: body ? { "Content-Type": "application/json" } : undefined,
+        body: body ? JSON.stringify(body) : undefined
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const error = new Error(data.message || "Não foi possível concluir.");
+        error.status = res.status;
+        throw error;
+      }
+      return data;
+    }
+    function showLogin() {
+      board.hidden = true;
+      logoutBtn.hidden = true;
+      loginForm.hidden = false;
+    }
+    function showBoard() {
+      loginForm.hidden = true;
+      board.hidden = false;
+      logoutBtn.hidden = false;
+    }
+    function renderFilters() {
+      filtersEl.replaceChildren();
+      STATUSES.forEach(([id, label]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = label;
+        button.className = filter === id ? "is-on" : "";
+        button.addEventListener("click", () => { filter = id; render(); });
+        filtersEl.appendChild(button);
+      });
+    }
+    function visibleLeads() {
+      return leads.filter((lead) => !filter || lead.status === filter);
+    }
+    function renderList() {
+      const rows = visibleLeads();
+      listEl.replaceChildren();
+      if (!rows.length) {
+        const empty = document.createElement("p");
+        empty.className = "empty";
+        empty.textContent = "Nenhum lead neste filtro.";
+        listEl.appendChild(empty);
+        return;
+      }
+      rows.forEach((lead) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "lead-btn" + (lead.id === selected ? " is-on" : "");
+        const title = document.createElement("strong");
+        title.textContent = lead.company || lead.name;
+        const meta = document.createElement("span");
+        meta.textContent = (STATUS_LABEL[lead.status] || "Novo") + " · " + (lead.topic || "");
+        button.append(title, meta);
+        button.addEventListener("click", () => { selected = lead.id; render(); });
+        listEl.appendChild(button);
+      });
+    }
+    function field(label, value) {
+      const wrap = document.createElement("div");
+      const name = document.createElement("span");
+      name.textContent = label;
+      wrap.append(name, document.createTextNode(text(value)));
+      return wrap;
+    }
+    function renderDetail() {
+      const lead = leads.find((item) => item.id === selected);
+      detailEl.replaceChildren();
+      if (!lead) {
+        const empty = document.createElement("p");
+        empty.className = "empty";
+        empty.textContent = "Selecione um lead.";
+        detailEl.appendChild(empty);
+        return;
+      }
+      const title = document.createElement("h2");
+      title.textContent = lead.name;
+      const sub = document.createElement("p");
+      sub.textContent = when(lead.createdAt) + " · " + (PAGE_LABEL[lead.page] || lead.page || "início");
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.append(
+        field("Empresa", lead.company),
+        field("E-mail", lead.email),
+        field("WhatsApp", lead.phone),
+        field("Operação", lead.topic),
+        field("NCM", lead.ncm),
+        field("Volume", lead.volumeLabel)
+      );
+      const message = document.createElement("p");
+      message.textContent = lead.message || "";
+      const statusLabel = document.createElement("label");
+      statusLabel.textContent = "Situação";
+      const status = document.createElement("select");
+      ["novo", "contato", "proposta", "cliente", "perdido"].forEach((id) => {
+        const option = document.createElement("option");
+        option.value = id;
+        option.textContent = STATUS_LABEL[id];
+        if (lead.status === id) option.selected = true;
+        status.appendChild(option);
+      });
+      const notesLabel = document.createElement("label");
+      notesLabel.textContent = "Anotações";
+      notesLabel.style.marginTop = "12px";
+      const notes = document.createElement("textarea");
+      notes.value = lead.notes || "";
+      const saveError = document.createElement("p");
+      saveError.className = "error";
+      const actions = document.createElement("div");
+      actions.className = "actions";
+      const save = document.createElement("button");
+      save.className = "primary";
+      save.type = "button";
+      save.textContent = "Salvar";
+      save.addEventListener("click", async () => {
+        save.disabled = true;
+        saveError.textContent = "";
+        try {
+          const data = await api("POST", { action: "update", id: lead.id, status: status.value, notes: notes.value });
+          leads = leads.map((item) => item.id === data.lead.id ? data.lead : item);
+          render();
+        } catch (err) {
+          saveError.textContent = err.message;
+          save.disabled = false;
+        }
+      });
+      const mail = document.createElement("a");
+      mail.className = "ghost";
+      mail.href = "mailto:" + lead.email;
+      mail.textContent = "E-mail";
+      actions.append(save, mail);
+      const href = waHref(lead);
+      if (href) {
+        const wa = document.createElement("a");
+        wa.className = "ghost";
+        wa.href = href;
+        wa.target = "_blank";
+        wa.rel = "noopener noreferrer";
+        wa.textContent = "WhatsApp";
+        actions.appendChild(wa);
+      }
+      detailEl.append(title, sub, meta, message, statusLabel, status, notesLabel, notes, saveError, actions);
+    }
+    function render() {
+      if (selected && !visibleLeads().some((lead) => lead.id === selected)) selected = visibleLeads()[0] ? visibleLeads()[0].id : "";
+      renderFilters();
+      renderList();
+      renderDetail();
+    }
+    async function load() {
+      const data = await api("GET");
+      leads = data.leads || [];
+      if (!selected && leads[0]) selected = leads[0].id;
+      showBoard();
+      render();
+    }
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const error = document.getElementById("login-error");
+      error.textContent = "";
+      try {
+        await api("POST", { action: "login", password: document.getElementById("password").value });
+        await load();
+      } catch (err) {
+        error.textContent = err.message;
+      }
+    });
+    logoutBtn.addEventListener("click", async () => {
+      await api("POST", { action: "logout" });
+      leads = [];
+      selected = "";
+      showLogin();
+    });
+    load().catch(() => showLogin());
+  </script>
+</body>
+</html>

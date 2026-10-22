@@ -11,6 +11,9 @@ export/
 # Node
 node_modules/
 
+# Leads do painel local
+data/
+
 # Sistema
 .DS_Store
 Thumbs.db

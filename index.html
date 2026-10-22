@@ -6,10 +6,10 @@
   <title>VMI Assessoria Empresarial | Comércio Exterior, Importação e Exportação</title>
   <meta name="description" content="Especialistas em comércio exterior, importação, exportação, logística internacional e assessoria aduaneira. Soluções completas para empresas." />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://vmi-assessoria.vercel.app/" />
+  <link rel="canonical" href="https://www.vmiass.com/" />
 
-  <link rel="icon" type="image/png" href="assets/favicon.png" />
-  <link rel="apple-touch-icon" href="assets/favicon.png" />
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/favicon.png" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
@@ -17,21 +17,21 @@
   <meta property="og:site_name" content="VMI Assessoria Empresarial" />
   <meta property="og:title" content="VMI Assessoria Empresarial | Comércio Exterior, Importação e Exportação" />
   <meta property="og:description" content="Especialistas em comércio exterior, importação, exportação, logística internacional e assessoria aduaneira. Soluções completas para empresas." />
-  <meta property="og:url" content="https://vmi-assessoria.vercel.app/" />
-  <meta property="og:image" content="https://vmi-assessoria.vercel.app/assets/hero-porto.png" />
+  <meta property="og:url" content="https://www.vmiass.com/" />
+  <meta property="og:image" content="https://www.vmiass.com/assets/hero-porto.webp" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="VMI Assessoria Empresarial | Comércio Exterior, Importação e Exportação" />
   <meta name="twitter:description" content="Especialistas em comércio exterior, importação, exportação, logística internacional e assessoria aduaneira. Soluções completas para empresas." />
-  <meta name="twitter:image" content="https://vmi-assessoria.vercel.app/assets/hero-porto.png" />
+  <meta name="twitter:image" content="https://www.vmiass.com/assets/hero-porto.webp" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="image" href="assets/hero-porto.png" fetchpriority="high" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="/assets/hero-porto.webp" fetchpriority="high" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,600&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/styles.css" />
 
   <script type="application/ld+json">
   {
@@ -39,10 +39,10 @@
     "@graph": [
       {
         "@type": "Organization",
-        "@id": "https://vmi-assessoria.vercel.app/#organization",
+        "@id": "https://www.vmiass.com/#organization",
         "name": "VMI Assessoria Empresarial LTDA",
-        "url": "https://vmi-assessoria.vercel.app/",
-        "logo": "https://vmi-assessoria.vercel.app/assets/logo-vmi.svg",
+        "url": "https://www.vmiass.com/",
+        "logo": "https://www.vmiass.com/assets/logo-vmi.svg",
         "email": "operacional@vmiass.com",
         "telephone": "+55-11-96928-7540",
         "sameAs": [
@@ -53,10 +53,10 @@
       },
       {
         "@type": "LocalBusiness",
-        "@id": "https://vmi-assessoria.vercel.app/#localbusiness",
+        "@id": "https://www.vmiass.com/#localbusiness",
         "name": "VMI Assessoria Empresarial",
-        "image": "https://vmi-assessoria.vercel.app/assets/hero-porto.png",
-        "url": "https://vmi-assessoria.vercel.app/",
+        "image": "https://www.vmiass.com/assets/hero-porto.webp",
+        "url": "https://www.vmiass.com/",
         "telephone": "+55-11-96928-7540",
         "email": "operacional@vmiass.com",
         "address": {
@@ -66,68 +66,129 @@
           "addressRegion": "SP",
           "addressCountry": "BR"
         },
-        "parentOrganization": { "@id": "https://vmi-assessoria.vercel.app/#organization" }
+        "parentOrganization": { "@id": "https://www.vmiass.com/#organization" }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://www.vmiass.com/#webpage",
+        "url": "https://www.vmiass.com/",
+        "name": "VMI Assessoria Empresarial | Comércio Exterior, Importação e Exportação",
+        "description": "Assessoria em importação, exportação, despacho aduaneiro e logística internacional para empresas.",
+        "inLanguage": "pt-BR",
+        "about": { "@id": "https://www.vmiass.com/#organization" }
+      },
+      {
+        "@type": "ItemList",
+        "name": "Serviços de comércio exterior",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Importação", "url": "https://www.vmiass.com/importacao/" },
+          { "@type": "ListItem", "position": 2, "name": "Exportação", "url": "https://www.vmiass.com/exportacao/" },
+          { "@type": "ListItem", "position": 3, "name": "Despacho aduaneiro", "url": "https://www.vmiass.com/despacho-aduaneiro/" }
+        ]
       }
     ]
   }
   </script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    var vmiConsent = "denied";
+    try { vmiConsent = localStorage.getItem("vmi-consent") === "granted" ? "granted" : "denied"; } catch (e) {}
+    gtag("consent", "default", {
+      ad_storage: vmiConsent,
+      analytics_storage: vmiConsent,
+      ad_user_data: vmiConsent,
+      ad_personalization: vmiConsent
+    });
+  </script>
+  <script src="/tracking.js"></script>
 </head>
-<body>
-  <div id="root"></div>
+<body data-page="home">
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KSZNTP93" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <main id="conteudo" class="conteudo-indexavel">
+    <h1>Habilitamos operações internacionais com segurança, agilidade e inteligência.</h1>
+    <p>Assessoria completa em importação, exportação e logística internacional. Da busca por fornecedores até a entrega da mercadoria.</p>
+    <p>Especialistas em comércio exterior. Parceiros no crescimento do seu negócio.</p>
+    <ul>
+      <li>Operações nacionais e internacionais</li>
+      <li>Equipe especializada</li>
+      <li>Presença em 12 cidades estratégicas</li>
+      <li>Atendimento personalizado</li>
+    </ul>
 
+    <h2>Experiência que gera resultados.</h2>
+    <ul>
+      <li>Mais de 30 anos de experiência</li>
+      <li>Mais de 20 países atendidos</li>
+      <li>Mais de 12 escritórios no Brasil</li>
+      <li>100% de foco em conformidade e segurança</li>
+    </ul>
+
+    <h2>Soluções completas, da origem ao destino final.</h2>
+    <p>A VMI Assessoria foi criada para oferecer soluções completas em Comércio Exterior, desde a busca por fornecedores até a entrega da mercadoria no destino final. Atua com excelência, agilidade e segurança em todas as etapas dos processos de importação e exportação.</p>
+    <p>Nossa missão é simplificar operações internacionais e gerar resultados para os clientes. Presença estratégica nos principais polos logísticos, aeroportos, portos e fronteiras do Brasil.</p>
+    <p>12 escritórios: São Paulo (matriz, Av. Paulista), Guarulhos, Viracopos, Santos, Rio de Janeiro, Curitiba, Goiânia, Uruguaiana, Chuí, Itajaí, Florianópolis e Salvador.</p>
+
+    <h2>Premiados no CTF Awards.</h2>
+    <p>Na categoria Innovation, a VMI Assessoria foi reconhecida por ser inovadora no comércio exterior. É um prêmio que reforça nossa forma de conduzir operações internacionais com inteligência e precisão.</p>
+
+    <h2>Tudo o que sua operação internacional precisa.</h2>
+    <p>Da busca por fornecedores à entrega no destino final, cuidamos de cada etapa do seu comércio exterior com precisão técnica e atendimento próximo.</p>
+    <ul>
+      <li><a href="/importacao/">Importação</a>: gestão completa do processo, do planejamento à nacionalização.</li>
+      <li><a href="/exportacao/">Exportação</a>: estruturação e operação com segurança e competitividade.</li>
+      <li><a href="/despacho-aduaneiro/">Assessoria aduaneira</a>: suporte técnico junto à Receita Federal e órgãos anuentes.</li>
+      <li>Logística integrada: coordenação de toda a cadeia, da origem ao destino final.</li>
+      <li>Catálogo de Produtos no Portal Único Siscomex.</li>
+      <li>Emissão de DI, DUIMP e DUE.</li>
+      <li>Emissão de LI e LPCO.</li>
+      <li>Classificação fiscal e enquadramento de NCM.</li>
+      <li>Agenciamento de cargas, seguro internacional e transporte nacional.</li>
+      <li>Ex tarifário, regimes especiais e benefícios fiscais.</li>
+    </ul>
+
+    <h2>Como apoiamos sua operação internacional</h2>
+    <ol>
+      <li>Diagnóstico da operação: analisamos oportunidades, riscos e requisitos.</li>
+      <li>Planejamento estratégico: rota aduaneira, fiscal e logística.</li>
+      <li>Execução aduaneira e logística.</li>
+      <li>Acompanhamento junto à Receita Federal e órgãos anuentes.</li>
+      <li>Entrega e suporte contínuo.</li>
+    </ol>
+
+    <h2>Experiência em diversos setores da economia.</h2>
+    <p>Máquinas e equipamentos, produtos eletrônicos, móveis, têxtil, autopeças, automóveis, embarcações, produtos químicos e cosméticos.</p>
+
+    <h2>Por que empresas escolhem a VMI?</h2>
+    <ul>
+      <li>Foco em resultados</li>
+      <li>Equipe especializada</li>
+      <li>Segurança e conformidade</li>
+      <li>Atuação global</li>
+      <li>Soluções personalizadas</li>
+      <li>Parceria e confiança</li>
+    </ul>
+
+    <h2>Contato</h2>
+    <p>Solicite uma análise da sua operação. Retornamos em até 1 dia útil.</p>
+    <p>Atendimento de segunda a sexta, das 9h às 18h.</p>
+    <p>WhatsApp: <a href="https://wa.me/5511969287540">(11) 96928-7540</a></p>
+    <p>E-mail: <a href="mailto:operacional@vmiass.com">operacional@vmiass.com</a></p>
+    <p>Av. Paulista, São Paulo, SP.</p>
+    <p><a href="https://www.linkedin.com/company/vmi-assessoria-empresarial-ltda">LinkedIn</a> e <a href="https://instagram.com/vmiassessoria">Instagram</a>.</p>
+  </main>
+  <div id="root"></div>
   <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
-
-  <script type="text/babel" src="tweaks-panel.jsx"></script>
-  <script type="text/babel" src="icons.jsx"></script>
-  <script type="text/babel" src="app.jsx"></script>
-
-  <script type="text/babel" data-presets="env,react">
-    const TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
-      "accent": "#d8b15a",
-      "headlineFont": "DM Sans",
-      "bodyFont": "Manrope"
-    }/*EDITMODE-END*/;
-
-    function TweaksUI() {
-      const { TweaksPanel, useTweaks, TweakSection, TweakColor, TweakSelect } = window;
-      const [t, setTweak] = useTweaks(TWEAKS_DEFAULTS);
-
-      React.useEffect(() => {
-        document.documentElement.style.setProperty("--accent", t.accent);
-        document.documentElement.style.setProperty("--accent-deep", t.accent);
-        document.documentElement.style.setProperty("--serif", `"${t.headlineFont}", "Manrope", Arial, sans-serif`);
-        document.documentElement.style.setProperty("--sans", `"${t.bodyFont}", Helvetica, Arial, sans-serif`);
-      }, [t]);
-
-      return (
-        <TweaksPanel title="Tweaks">
-          <TweakSection label="Visual">
-            <TweakColor label="Cor de acento" value={t.accent} onChange={(v) => setTweak("accent", v)}
-              options={["#d8b15a", "#c9962f", "#e0c06a", "#b8923f", "#cdb37a"]} />
-          </TweakSection>
-          <TweakSection label="Tipografia">
-            <TweakSelect label="Fonte de títulos" value={t.headlineFont} onChange={(v) => setTweak("headlineFont", v)}
-              options={["DM Sans", "Manrope", "JetBrains Mono"]} />
-            <TweakSelect label="Fonte de texto" value={t.bodyFont} onChange={(v) => setTweak("bodyFont", v)}
-              options={["Manrope", "DM Sans", "JetBrains Mono"]} />
-          </TweakSection>
-        </TweaksPanel>
-      );
-    }
-
-    function Root() {
-      return (
-        <React.Fragment>
-          <window.VMIApp />
-          <TweaksUI />
-        </React.Fragment>
-      );
-    }
-
-    ReactDOM.createRoot(document.getElementById("root")).render(<Root />);
+  <script src="/assets/icons.js" defer></script>
+  <script src="/assets/app.js" defer></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var conteudo = document.getElementById("conteudo");
+      if (conteudo && window.VMIApp) conteudo.remove();
+      if (!window.VMIApp || !window.ReactDOM) return;
+      ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(window.VMIApp));
+    });
   </script>
-
 </body>
 </html>

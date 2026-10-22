@@ -12,6 +12,31 @@ const INSTAGRAM_HANDLE = "@vmiassessoria";
 const HQ_STREET = "Av. Paulista";
 const HQ_CITY = "São Paulo, SP";
 const CONTACT_API = "/api/contact";
+const PAGE = (document.body && document.body.dataset.page) || "home";
+const IS_HOME = PAGE === "home";
+
+function siteHref(hash) {
+  return IS_HOME ? hash : `/${hash}`;
+}
+
+function trackEvent(name, params) {
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push(Object.assign({ event: name }, params || {}));
+}
+
+const VOLUME_OPTIONS = [
+  { value: "", label: "Selecione o volume mensal" },
+  { value: "pessoal", label: "Compra pessoal ou ainda sem operação" },
+  { value: "ate-5", label: "Até US$ 5 mil por mês" },
+  { value: "5-20", label: "De US$ 5 mil a US$ 20 mil por mês" },
+  { value: "20-100", label: "De US$ 20 mil a US$ 100 mil por mês" },
+  { value: "acima-100", label: "Acima de US$ 100 mil por mês" }
+];
+const TOPIC_BY_PAGE = {
+  importacao: "Importação",
+  exportacao: "Exportação",
+  "despacho-aduaneiro": "Assessoria aduaneira"
+};
 
 // ----- Configuração editável (stats, hero, presença) -----
 const SITE_CONFIG = {
@@ -37,41 +62,42 @@ const SITE_CONFIG = {
   awardMedia: [
     {
       type: "video",
-      src: "assets/premiacao/ctf-awards.mp4",
+      src: "/assets/premiacao/ctf-awards.mp4",
       caption: "Cerimônia do CTF Awards",
       orient: "portrait"
     },
     {
       type: "image",
-      src: "assets/premiacao/ctf-trofeu.png",
+      src: "/assets/premiacao/ctf-trofeu.webp",
       alt: "Equipe da VMI com o troféu do CTF Awards na categoria Innovation",
       caption: "Categoria Innovation",
-      orient: "landscape"
+      orient: "landscape",
+      featured: true
     },
     {
       type: "image",
-      src: "assets/premiacao/ctf-entrega.png",
+      src: "/assets/premiacao/ctf-entrega.webp",
       alt: "Momento da entrega do CTF Awards no palco",
       caption: "Entrega do prêmio",
       orient: "landscape"
     },
     {
       type: "image",
-      src: "assets/premiacao/ctf-equipe.png",
+      src: "/assets/premiacao/ctf-equipe.webp",
       alt: "Equipe da VMI Assessoria no Comex Tech Forum",
       caption: "Equipe VMI no evento",
       orient: "landscape"
     },
     {
       type: "image",
-      src: "assets/premiacao/ctf-palestra.png",
+      src: "/assets/premiacao/ctf-palestra.webp",
       alt: "Isabella Martins no palco do Comex Tech Forum",
       caption: "No palco do CTF",
       orient: "portrait"
     },
     {
       type: "image",
-      src: "assets/premiacao/ctf-forum.png",
+      src: "/assets/premiacao/ctf-forum.webp",
       alt: "Registro da VMI no Comex Tech Forum",
       caption: "Comex Tech Forum",
       orient: "portrait"
@@ -84,7 +110,7 @@ function BrandMark({ size = "nav" }) {
   return (
     <div className={`brand brand--${size}`}>
       <img
-        src="assets/logo-vmi.svg"
+        src="/assets/logo-vmi.svg"
         alt="VMI"
         className="brand-logo"
       />
@@ -146,16 +172,16 @@ function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   const links = [
-    ["Quem Somos", "#quem-somos"],
-    ["Reconhecimento", "#reconhecimento"],
-    ["Serviços", "#servicos"],
-    ["Diferenciais", "#diferenciais"],
-    ["Contato", "#contato"]
+    ["Quem Somos", siteHref("#quem-somos")],
+    ["Reconhecimento", siteHref("#reconhecimento")],
+    ["Serviços", siteHref("#servicos")],
+    ["Diferenciais", siteHref("#diferenciais")],
+    ["Contato", siteHref("#contato")]
   ];
   return (
     <header className={`nav ${scrolled ? "is-scrolled" : ""}`}>
       <div className="container nav-inner">
-        <a href="#top" aria-label="VMI"><BrandMark /></a>
+        <a href={IS_HOME ? "#top" : "/"} aria-label="VMI"><BrandMark /></a>
         <nav className="nav-links">
           {links.map(([l, h]) => <a key={h} href={h}>{l}</a>)}
         </nav>
@@ -214,7 +240,7 @@ function PortVisual() {
   return (
     <div className="hero-visual hero-visual--photo">
       <img
-        src="assets/hero-porto.png"
+        src="/assets/hero-porto.webp"
         alt="Navio porta-contêineres no porto ao pôr do sol"
         width="800"
         height="1000"
@@ -318,65 +344,34 @@ function About() {
 }
 
 // ----- Reconhecimento (premiação dos sócios) -----
-function AwardMedia({ item, active, videoRef, onPlay, onPause, onEnded }) {
-  if (item.type === "video") {
-    return (
-      <video
-        ref={active ? videoRef : undefined}
-        src={item.src}
-        controls={!!active}
-        muted={!active}
-        playsInline
-        preload="metadata"
-        title={item.caption}
-        onPlay={active ? onPlay : undefined}
-        onPause={active ? onPause : undefined}
-        onEnded={active ? onEnded : undefined}
-      >
-        Seu navegador não reproduz vídeo.
-      </video>
-    );
-  }
-  return <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />;
-}
-
 function Award() {
   const media = SITE_CONFIG.awardMedia;
-  const total = media.length;
-  const [index, setIndex] = useState(0);
-  const [dir, setDir] = useState(1);
-  const [hover, setHover] = useState(false);
-  const [videoPlaying, setVideoPlaying] = useState(false);
-  const videoRef = useRef(null);
+  const featured = media.find((item) => item.featured) || media[0];
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [viewIndex, setViewIndex] = useState(0);
 
-  const goTo = (nextIndex, direction) => {
-    const target = (nextIndex + total) % total;
-    if (target === index) return;
-    if (videoRef.current) {
-      videoRef.current.pause();
-      setVideoPlaying(false);
-    }
-    setDir(direction);
-    setIndex(target);
+  const openGallery = (index) => {
+    setViewIndex(index);
+    setGalleryOpen(true);
   };
 
-  const prev = () => goTo(index - 1, -1);
-  const next = () => goTo(index + 1, 1);
-
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (hover || videoPlaying || reduce) return undefined;
-    const timer = window.setInterval(() => {
-      setDir(1);
-      setIndex((current) => (current + 1) % total);
-    }, 6000);
-    return () => window.clearInterval(timer);
-  }, [hover, videoPlaying, total]);
+    if (!galleryOpen) return undefined;
+    const onKey = (ev) => {
+      if (ev.key === "Escape") setGalleryOpen(false);
+      if (ev.key === "ArrowRight") setViewIndex((i) => (i + 1) % media.length);
+      if (ev.key === "ArrowLeft") setViewIndex((i) => (i - 1 + media.length) % media.length);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [galleryOpen, media.length]);
 
-  const left = media[(index - 1 + total) % total];
-  const center = media[index];
-  const right = media[(index + 1) % total];
-  const motion = dir === 1 ? "award-slide--from-right" : "award-slide--from-left";
+  const current = media[viewIndex];
+  const featuredIndex = media.indexOf(featured);
 
   return (
     <section id="reconhecimento" className="award">
@@ -397,84 +392,89 @@ function Award() {
           <span>Categoria Innovation</span>
         </div>
 
-        <div
-          className={`award-stage award-stage--${center.type === "video" ? "video" : center.orient}`}
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-        >
-          <button
-            type="button"
-            className={`award-slide award-slide--side award-slide--${left.orient}${left.type === "video" ? " award-slide--video" : ""} ${motion}`}
-            onClick={prev}
-            aria-label={`Ver anterior: ${left.caption}`}
-          >
-            <AwardMedia item={left} />
-            <span className="award-slide__veil" aria-hidden="true" />
-          </button>
-
-          <figure
-            key={`${center.src}-${index}`}
-            className={`award-slide award-slide--center award-slide--${center.orient}${center.type === "video" ? " award-slide--video" : ""} ${motion}`}
-          >
-            <AwardMedia
-              item={center}
-              active
-              videoRef={videoRef}
-              onPlay={() => setVideoPlaying(true)}
-              onPause={() => setVideoPlaying(false)}
-              onEnded={() => {
-                setVideoPlaying(false);
-                setDir(1);
-                setIndex((current) => (current + 1) % total);
-              }}
-            />
-            <figcaption className={center.type === "video" ? "award-badge" : "award-caption"}>
-              {center.caption}
-            </figcaption>
-          </figure>
-
-          <button
-            type="button"
-            className={`award-slide award-slide--side award-slide--${right.orient}${right.type === "video" ? " award-slide--video" : ""} ${motion}`}
-            onClick={next}
-            aria-label={`Ver próxima: ${right.caption}`}
-          >
-            <AwardMedia item={right} />
-            <span className="award-slide__veil" aria-hidden="true" />
-          </button>
-        </div>
+        <figure className="award-hero">
+          <img src={featured.src} alt={featured.alt} />
+          <figcaption>{featured.caption}</figcaption>
+        </figure>
 
         <div className="award-controls">
-          <button type="button" className="award-controls__nav" onClick={prev} aria-label="Anterior">
-            <I.Arrow style={{ transform: "rotate(180deg)" }} />
-          </button>
-          <div className="award-dots" role="tablist" aria-label="Fotos e vídeo do CTF Awards">
-            {media.map((item, i) => (
-              <button
-                key={item.src}
-                type="button"
-                role="tab"
-                aria-selected={i === index}
-                className={`award-dot ${i === index ? "is-active" : ""}`}
-                onClick={() => goTo(i, i > index ? 1 : -1)}
-                aria-label={item.caption}
-              />
-            ))}
-          </div>
-          <button type="button" className="award-controls__nav" onClick={next} aria-label="Próxima">
-            <I.Arrow />
+          <button type="button" className="cta ghost" onClick={() => openGallery(featuredIndex)}>
+            Ver mais
           </button>
         </div>
       </div>
+
+      {galleryOpen && current && (
+        <div className="award-modal" role="dialog" aria-modal="true" aria-label="Galeria CTF Awards">
+          <button type="button" className="award-modal__backdrop" onClick={() => setGalleryOpen(false)} aria-label="Fechar" />
+          <div className="award-modal__panel">
+            <div className="award-modal__head">
+              <div>
+                <h3>CTF Awards</h3>
+                <p>{current.caption}</p>
+              </div>
+              <button type="button" className="award-modal__close" onClick={() => setGalleryOpen(false)} aria-label="Fechar">
+                <I.Close />
+              </button>
+            </div>
+
+            <div className="award-modal__view">
+              <button
+                type="button"
+                className="award-modal__nav award-modal__nav--prev"
+                onClick={() => setViewIndex((i) => (i - 1 + media.length) % media.length)}
+                aria-label="Anterior"
+              >
+                <I.Arrow />
+              </button>
+              {current.type === "video" ? (
+                <video key={current.src} src={current.src} controls playsInline preload="metadata" title={current.caption}>
+                  Seu navegador não reproduz vídeo.
+                </video>
+              ) : (
+                <img src={current.src} alt={current.alt} />
+              )}
+              <button
+                type="button"
+                className="award-modal__nav award-modal__nav--next"
+                onClick={() => setViewIndex((i) => (i + 1) % media.length)}
+                aria-label="Próxima"
+              >
+                <I.Arrow />
+              </button>
+            </div>
+
+            <div className="award-modal__thumbs" role="tablist" aria-label="Fotos e vídeo">
+              {media.map((item, i) => (
+                <button
+                  key={item.src}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === viewIndex}
+                  className={`award-modal__thumb ${i === viewIndex ? "is-active" : ""} ${item.type === "video" ? "is-video" : ""}`}
+                  onClick={() => setViewIndex(i)}
+                  aria-label={item.caption}
+                >
+                  {item.type === "video" ? (
+                    <span className="award-modal__video-mark">Vídeo</span>
+                  ) : (
+                    <img src={item.src} alt="" />
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
 
 // ----- Services (14 from portfolio) -----
 const SERVICES = [
-  ["Exchange", "Importação", "Gestão completa do seu processo de importação, do planejamento à nacionalização."],
-  ["Plane", "Exportação", "Estruturação e operação de exportações com segurança e competitividade."],
-  ["Stamp", "Assessoria aduaneira", "Suporte técnico junto à Receita Federal e órgãos anuentes em todas as etapas."],
+  ["Exchange", "Importação", "Gestão completa do seu processo de importação, do planejamento à nacionalização.", "/importacao/"],
+  ["Plane", "Exportação", "Estruturação e operação de exportações com segurança e competitividade.", "/exportacao/"],
+  ["Stamp", "Assessoria aduaneira", "Suporte técnico junto à Receita Federal e órgãos anuentes em todas as etapas.", "/despacho-aduaneiro/"],
   ["Truck", "Logística integrada", "Coordenação de toda a cadeia logística, da origem ao destino final."],
   ["Doc", "Catálogo de Produtos", "Elaboração e gestão do Catálogo de Produtos no Portal Único Siscomex."],
   ["Tag", "Emissão de DI / DUIMP / DUE", "Registro preciso das declarações de importação e exportação."],
@@ -504,13 +504,13 @@ function Services() {
         </Reveal>
 
         <div className="services">
-          {SERVICES.map(([icon, title, desc], idx) => {
+          {SERVICES.map(([icon, title, desc, href], idx) => {
             const Ico = I[icon];
             return (
               <Reveal key={title} as="article" className="svc" delay={(idx % 3) * 60}>
                 <span className="svc-icon"><Ico /></span>
                 <div className="svc-body">
-                  <h3>{title}</h3>
+                  <h3>{href ? <a href={href}>{title}</a> : title}</h3>
                   <p>{desc}</p>
                 </div>
               </Reveal>
@@ -660,10 +660,24 @@ function CtaBlock() {
 }
 
 // ----- Contact -----
+function emptyForm() {
+  return {
+    name: "",
+    email: "",
+    company: "",
+    topic: TOPIC_BY_PAGE[PAGE] || "Importação",
+    ncm: "",
+    volume: "",
+    phone: "",
+    msg: ""
+  };
+}
+
 function Contact() {
-  const [form, setForm] = useState({ name: "", email: "", company: "", topic: "Importação", msg: "" });
+  const [form, setForm] = useState(emptyForm);
   const [errors, setErrors] = useState({});
   const [sent, setSent] = useState(false);
+  const [blocked, setBlocked] = useState(false);
   const [sending, setSending] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
@@ -671,6 +685,10 @@ function Contact() {
     const e = {};
     if (!form.name.trim()) e.name = "Informe seu nome.";
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) e.email = "E-mail inválido.";
+    if (!form.company.trim()) e.company = "Informe a empresa.";
+    if (!form.ncm.trim()) e.ncm = "Informe o NCM ou escreva Não sei informar.";
+    if (!form.volume) e.volume = "Selecione o volume mensal.";
+    if (form.phone.trim() && form.phone.replace(/\D/g, "").length < 10) e.phone = "Informe um WhatsApp com DDD.";
     if (!form.msg.trim() || form.msg.trim().length < 10) e.msg = "Descreva sua necessidade (10+ caracteres).";
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -681,23 +699,38 @@ function Contact() {
     const formEl = ev.currentTarget;
     if (formEl.botcheck?.checked) return;
 
+    if (form.volume === "pessoal") {
+      setBlocked(true);
+      trackEvent("lead_unqualified", { volume: form.volume, topic: form.topic, page: PAGE });
+      return;
+    }
+
     setSending(true);
     setSubmitError("");
     try {
+      const payload = {
+        name: form.name.trim(),
+        email: form.email.trim(),
+        company: form.company.trim(),
+        topic: form.topic,
+        ncm: form.ncm.trim(),
+        volume: form.volume,
+        phone: form.phone.trim(),
+        message: form.msg.trim(),
+        page: PAGE
+      };
       const res = await fetch(CONTACT_API, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          name: form.name.trim(),
-          email: form.email.trim(),
-          company: form.company.trim(),
-          topic: form.topic,
-          message: form.msg.trim()
-        })
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
       if (res.ok && data.success) {
         setSent(true);
+        trackEvent("generate_lead", { topic: form.topic, volume: form.volume, page: PAGE });
+      } else if (data.qualified === false) {
+        setBlocked(true);
+        trackEvent("lead_unqualified", { volume: form.volume, topic: form.topic, page: PAGE });
       } else {
         setSubmitError(data.message || "Não foi possível enviar. Tente novamente ou use o WhatsApp.");
       }
@@ -710,8 +743,9 @@ function Contact() {
   const setF = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   const resetForm = () => {
     setSent(false);
+    setBlocked(false);
     setSubmitError("");
-    setForm({ name: "", email: "", company: "", topic: "Importação", msg: "" });
+    setForm(emptyForm());
   };
 
   return (
@@ -730,7 +764,16 @@ function Contact() {
 
         <div className="contact-grid">
           <Reveal as="div" className="contact-card">
-            {sent ? (
+            {blocked ? (
+              <div>
+                <div className="form-error-msg">
+                  Este canal é para operações de comércio exterior. Se a sua necessidade for pontual, fale com a equipe pelo WhatsApp.
+                </div>
+                <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="cta primary" style={{ marginTop: 22 }}>
+                  <I.Wpp style={{ width: 16, height: 16 }} /> Falar no WhatsApp
+                </a>
+              </div>
+            ) : sent ? (
               <div>
                 <div className="success-msg">
                   <I.Shield style={{ width: 18, height: 18 }} />
@@ -760,9 +803,10 @@ function Contact() {
                   </div>
                 </div>
                 <div className="field-row">
-                  <div className="field">
+                  <div className={`field ${errors.company ? "error" : ""}`}>
                     <label>Empresa</label>
                     <input type="text" value={form.company} onChange={setF("company")} placeholder="Razão social" />
+                    <span className="err">{errors.company || ""}</span>
                   </div>
                   <div className="field">
                     <label>Tipo de operação</label>
@@ -776,6 +820,27 @@ function Contact() {
                       <option>Outro</option>
                     </select>
                   </div>
+                </div>
+                <div className="field-row">
+                  <div className={`field ${errors.ncm ? "error" : ""}`}>
+                    <label>NCM</label>
+                    <input type="text" value={form.ncm} onChange={setF("ncm")} placeholder="Ex.: 8471.30.12 ou Não sei informar" />
+                    <span className="err">{errors.ncm || ""}</span>
+                  </div>
+                  <div className={`field ${errors.volume ? "error" : ""}`}>
+                    <label>Volume mensal estimado</label>
+                    <select value={form.volume} onChange={setF("volume")}>
+                      {VOLUME_OPTIONS.map((option) => (
+                        <option key={option.value || "empty"} value={option.value}>{option.label}</option>
+                      ))}
+                    </select>
+                    <span className="err">{errors.volume || ""}</span>
+                  </div>
+                </div>
+                <div className={`field ${errors.phone ? "error" : ""}`}>
+                  <label>WhatsApp</label>
+                  <input type="tel" value={form.phone} onChange={setF("phone")} placeholder="Opcional, com DDD" />
+                  <span className="err">{errors.phone || ""}</span>
                 </div>
                 <div className={`field ${errors.msg ? "error" : ""}`}>
                   <label>Conte sobre sua necessidade</label>
@@ -835,7 +900,12 @@ function Contact() {
 }
 
 // ----- Footer -----
-const FOOTER_SERVICES = ["Importação", "Exportação", "Assessoria Aduaneira", "Logística Integrada"];
+const FOOTER_SERVICES = [
+  ["Importação", "/importacao/"],
+  ["Exportação", "/exportacao/"],
+  ["Despacho aduaneiro", "/despacho-aduaneiro/"],
+  ["Logística integrada", siteHref("#servicos")]
+];
 
 function Footer() {
   return (
@@ -857,8 +927,8 @@ function Footer() {
           <div className="footer-col">
             <h4>Serviços</h4>
             <ul>
-              {FOOTER_SERVICES.map((s) => (
-                <li key={s}><a href="#servicos">{s}</a></li>
+              {FOOTER_SERVICES.map(([label, href]) => (
+                <li key={label}><a href={href}>{label}</a></li>
               ))}
             </ul>
           </div>
@@ -890,27 +960,154 @@ function Footer() {
   );
 }
 
+const SERVICE_PAGES = {
+  importacao: {
+    kicker: "Importação",
+    title: "Importação com segurança, do fornecedor à nacionalização.",
+    lead: "Planejamos a operação, classificamos a mercadoria e conduzimos licenças, DUIMP e logística até a entrega no Brasil.",
+    points: [
+      ["Doc", "Planejamento da operação", "Definimos rota, custos, regime aduaneiro e documentos antes do embarque."],
+      ["Calculator", "Classificação fiscal", "Enquadramento de NCM para reduzir risco de multa e recolhimento indevido."],
+      ["Stamp", "LI, LPCO e DUIMP", "Tratamento administrativo e registro das declarações no Portal Único."],
+      ["Truck", "Logística internacional", "Do embarque na origem à entrega no destino, com acompanhamento da carga."]
+    ]
+  },
+  exportacao: {
+    kicker: "Exportação",
+    title: "Exportação estruturada para vender no exterior com previsibilidade.",
+    lead: "Organizamos a saída da mercadoria, a documentação e a logística para a operação chegar ao comprador com conformidade.",
+    points: [
+      ["Plane", "Estruturação da exportação", "Avaliamos produto, destino, documentos e a melhor forma de operar."],
+      ["Doc", "DUE e documentos", "Registro da declaração única de exportação e apoio na documentação comercial."],
+      ["Ship", "Logística de saída", "Cotação de frete, embarque e coordenação até o destino."],
+      ["Shield", "Conformidade", "A operação segue a legislação aduaneira e os órgãos competentes."]
+    ]
+  },
+  "despacho-aduaneiro": {
+    kicker: "Despacho aduaneiro",
+    title: "Despacho aduaneiro com acompanhamento em cada etapa.",
+    lead: "Atuamos junto à Receita Federal e aos órgãos anuentes para a mercadoria seguir com documentação correta e menos atraso.",
+    points: [
+      ["Stamp", "Conferência documental", "Revisamos invoice, packing list, conhecimento de carga e licenças."],
+      ["Tag", "Registro de declarações", "DI, DUIMP e DUE com os dados certos para evitar exigência."],
+      ["Shield", "Órgãos anuentes", "Acompanhamento de anuências, canais e pendências do processo."],
+      ["Hands", "Suporte à operação", "A equipe fica próxima do cliente até a liberação da carga."]
+    ]
+  }
+};
+
+function ServicePage({ page }) {
+  return (
+    <React.Fragment>
+      <section className="service-hero theme-light">
+        <div className="container">
+          <span className="eyebrow">{page.kicker}</span>
+          <h1>{page.title}</h1>
+          <p className="lede">{page.lead}</p>
+          <div className="hero-meta">
+            <a href="#contato" className="cta primary">Solicitar análise <I.Arrow className="arrow" /></a>
+            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="cta ghost">Falar no WhatsApp</a>
+          </div>
+        </div>
+      </section>
+      <section className="theme-light alt">
+        <div className="container">
+          <div className="services">
+            {page.points.map(([icon, title, desc]) => {
+              const Ico = I[icon];
+              return (
+                <article className="svc" key={title}>
+                  <span className="svc-icon"><Ico /></span>
+                  <div className="svc-body">
+                    <h3>{title}</h3>
+                    <p>{desc}</p>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+      <Contact />
+    </React.Fragment>
+  );
+}
+
+function ConsentBanner() {
+  const [choice, setChoice] = useState(() => {
+    try { return localStorage.getItem("vmi-consent"); } catch { return "denied"; }
+  });
+  if (choice) return null;
+
+  const choose = (value) => {
+    try { localStorage.setItem("vmi-consent", value); } catch { /* ignore */ }
+    const granted = value === "granted" ? "granted" : "denied";
+    if (typeof window.gtag === "function") {
+      window.gtag("consent", "update", {
+        ad_storage: granted,
+        analytics_storage: granted,
+        ad_user_data: granted,
+        ad_personalization: granted
+      });
+    }
+    trackEvent(value === "granted" ? "consent_granted" : "consent_denied");
+    setChoice(value);
+  };
+
+  return (
+    <div className="cookie-banner" role="dialog" aria-label="Cookies e medição">
+      <p>Usamos cookies para medir visitas e anúncios. Você pode aceitar ou seguir só com o essencial.</p>
+      <div className="cookie-banner__actions">
+        <button type="button" className="cta ghost" onClick={() => choose("denied")}>Só o essencial</button>
+        <button type="button" className="cta primary" onClick={() => choose("granted")}>Aceitar</button>
+      </div>
+    </div>
+  );
+}
+
+function TrackClicks() {
+  useEffect(() => {
+    const onClick = (ev) => {
+      const link = ev.target.closest && ev.target.closest("a");
+      if (!link) return;
+      const href = link.getAttribute("href") || "";
+      if (href.indexOf("wa.me") !== -1) trackEvent("whatsapp_click", { page: PAGE });
+      else if (href.indexOf("mailto:") === 0) trackEvent("email_click", { page: PAGE });
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, []);
+  return null;
+}
+
 // ----- App -----
 function App() {
+  const service = SERVICE_PAGES[PAGE];
   return (
     <React.Fragment>
       <Nav />
-      <Hero />
-      <SocialProof />
-      <TrustStrip />
-      <About />
-      <Award />
-      <Services />
-      <HowItWorks />
-      <Segments />
-      <Why />
-      <CtaBlock />
-      <Contact />
+      {service ? <ServicePage page={service} /> : (
+        <React.Fragment>
+          <Hero />
+          <SocialProof />
+          <TrustStrip />
+          <About />
+          <Award />
+          <Services />
+          <HowItWorks />
+          <Segments />
+          <Why />
+          <CtaBlock />
+          <Contact />
+        </React.Fragment>
+      )}
       <Footer />
       <a className="wa-float" href={WHATSAPP} target="_blank" rel="noopener" aria-label="Fale conosco pelo WhatsApp">
         <I.Wpp />
         <span className="wa-label">Fale conosco</span>
       </a>
+      <ConsentBanner />
+      <TrackClicks />
     </React.Fragment>
   );
 }

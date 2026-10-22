@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /gestao/
+
+Sitemap: https://www.vmiass.com/sitemap.xml

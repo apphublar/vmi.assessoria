@@ -1087,6 +1087,7 @@ section { padding: clamp(72px, 9vw, 128px) 0; position: relative; }
 .form-foot { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin-top: 8px; flex-wrap: wrap; }
 .consent { font-size: 12px; color: var(--muted); max-width: 28ch; }
 .field.error input, .field.error textarea { border-bottom-color: #c0382b; }
+.field .hint { color: var(--muted); font-size: 12.5px; line-height: 1.4; }
 .field .err { color: #c0382b; font-size: 12px; min-height: 14px; }
 .success-msg {
   background: oklch(0.95 0.05 145);

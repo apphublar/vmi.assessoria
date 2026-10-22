@@ -67,11 +67,14 @@ function addLead(input) {
       name: input.name,
       email: input.email,
       company: input.company,
+      cnpj: input.cnpj || "",
       phone: input.phone || "",
       topic: input.topic,
+      product: input.product || "",
       ncm: input.ncm,
       volume: input.volume,
       volumeLabel: input.volumeLabel,
+      cargo: input.cargo || "",
       message: input.message,
       page: input.page || "home"
     };

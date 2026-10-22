@@ -660,14 +660,43 @@ function CtaBlock() {
 }
 
 // ----- Contact -----
+function formatCnpj(value) {
+  const digits = String(value || "").replace(/\D/g, "").slice(0, 14);
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 5) return `${digits.slice(0, 2)}.${digits.slice(2)}`;
+  if (digits.length <= 8) return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5)}`;
+  if (digits.length <= 12) return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8)}`;
+  return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8, 12)}-${digits.slice(12)}`;
+}
+
+function isValidCnpj(value) {
+  const cnpj = String(value || "").replace(/\D/g, "");
+  if (!/^\d{14}$/.test(cnpj) || /^(\d)\1{13}$/.test(cnpj)) return false;
+  const digit = (length) => {
+    let sum = 0;
+    let pos = length - 7;
+    for (let i = length; i >= 1; i -= 1) {
+      sum += Number(cnpj[length - i]) * pos;
+      pos -= 1;
+      if (pos < 2) pos = 9;
+    }
+    const result = sum % 11;
+    return result < 2 ? 0 : 11 - result;
+  };
+  return digit(12) === Number(cnpj[12]) && digit(13) === Number(cnpj[13]);
+}
+
 function emptyForm() {
   return {
     name: "",
     email: "",
     company: "",
+    cnpj: "",
     topic: TOPIC_BY_PAGE[PAGE] || "Importação",
+    product: "",
     ncm: "",
     volume: "",
+    cargo: "",
     phone: "",
     msg: ""
   };
@@ -686,8 +715,11 @@ function Contact() {
     if (!form.name.trim()) e.name = "Informe seu nome.";
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) e.email = "E-mail inválido.";
     if (!form.company.trim()) e.company = "Informe a empresa.";
+    if (!isValidCnpj(form.cnpj)) e.cnpj = "Informe um CNPJ válido.";
+    if (form.product.trim().length < 2) e.product = "Informe o produto.";
     if (!form.ncm.trim()) e.ncm = "Informe o NCM ou escreva Não sei informar.";
     if (!form.volume) e.volume = "Selecione o volume mensal.";
+    if (form.cargo.trim().length < 2) e.cargo = "Informe o volume da carga.";
     if (form.phone.trim() && form.phone.replace(/\D/g, "").length < 10) e.phone = "Informe um WhatsApp com DDD.";
     if (!form.msg.trim() || form.msg.trim().length < 10) e.msg = "Descreva sua necessidade (10+ caracteres).";
     setErrors(e);
@@ -712,9 +744,12 @@ function Contact() {
         name: form.name.trim(),
         email: form.email.trim(),
         company: form.company.trim(),
+        cnpj: form.cnpj.trim(),
         topic: form.topic,
+        product: form.product.trim(),
         ncm: form.ncm.trim(),
         volume: form.volume,
+        cargo: form.cargo.trim(),
         phone: form.phone.trim(),
         message: form.msg.trim(),
         page: PAGE
@@ -808,6 +843,13 @@ function Contact() {
                     <input type="text" value={form.company} onChange={setF("company")} placeholder="Razão social" />
                     <span className="err">{errors.company || ""}</span>
                   </div>
+                  <div className={`field ${errors.cnpj ? "error" : ""}`}>
+                    <label>CNPJ</label>
+                    <input type="text" inputMode="numeric" value={form.cnpj} onChange={(e) => setForm({ ...form, cnpj: formatCnpj(e.target.value) })} placeholder="00.000.000/0000-00" />
+                    <span className="err">{errors.cnpj || ""}</span>
+                  </div>
+                </div>
+                <div className="field-row">
                   <div className="field">
                     <label>Tipo de operação</label>
                     <select value={form.topic} onChange={setF("topic")}>
@@ -819,6 +861,11 @@ function Contact() {
                       <option>Regimes especiais / Benefícios fiscais</option>
                       <option>Outro</option>
                     </select>
+                  </div>
+                  <div className={`field ${errors.product ? "error" : ""}`}>
+                    <label>Produto</label>
+                    <input type="text" value={form.product} onChange={setF("product")} placeholder="Nome da mercadoria" />
+                    <span className="err">{errors.product || ""}</span>
                   </div>
                 </div>
                 <div className="field-row">
@@ -837,6 +884,12 @@ function Contact() {
                     <span className="err">{errors.volume || ""}</span>
                   </div>
                 </div>
+                <div className={`field ${errors.cargo ? "error" : ""}`}>
+                  <label>Volume da carga</label>
+                  <input type="text" value={form.cargo} onChange={setF("cargo")} placeholder="Quantidade da carga" />
+                  <span className="hint">Sugestão: 1 contêiner, 100 caixas, 10 pallets.</span>
+                  <span className="err">{errors.cargo || ""}</span>
+                </div>
                 <div className={`field ${errors.phone ? "error" : ""}`}>
                   <label>WhatsApp</label>
                   <input type="tel" value={form.phone} onChange={setF("phone")} placeholder="Opcional, com DDD" />
@@ -844,7 +897,7 @@ function Contact() {
                 </div>
                 <div className={`field ${errors.msg ? "error" : ""}`}>
                   <label>Conte sobre sua necessidade</label>
-                  <textarea value={form.msg} onChange={setF("msg")} placeholder="Volume estimado, origem, produto, prazos..." />
+                  <textarea value={form.msg} onChange={setF("msg")} placeholder="Origem, destino, prazos e o que mais a equipe precisa saber." />
                   <span className="err">{errors.msg || ""}</span>
                 </div>
                 <div className="form-foot">

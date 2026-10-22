@@ -195,11 +195,14 @@
       meta.className = "meta";
       meta.append(
         field("Empresa", lead.company),
+        field("CNPJ", lead.cnpj),
         field("E-mail", lead.email),
         field("WhatsApp", lead.phone),
         field("Operação", lead.topic),
+        field("Produto", lead.product),
         field("NCM", lead.ncm),
-        field("Volume", lead.volumeLabel)
+        field("Volume mensal", lead.volumeLabel),
+        field("Volume da carga", lead.cargo)
       );
       const message = document.createElement("p");
       message.textContent = lead.message || "";

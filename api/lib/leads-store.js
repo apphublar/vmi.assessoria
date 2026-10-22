@@ -75,6 +75,8 @@ function addLead(input) {
       volume: input.volume,
       volumeLabel: input.volumeLabel,
       cargo: input.cargo || "",
+      channel: input.channel || "email",
+      channelLabel: input.channelLabel || "",
       message: input.message,
       page: input.page || "home"
     };

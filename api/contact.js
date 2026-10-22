@@ -18,6 +18,20 @@ function isValidCnpj(value) {
   return digit(12) === Number(cnpj[12]) && digit(13) === Number(cnpj[13]);
 }
 
+function buildWhatsappUrl(lead) {
+  const lines = [
+    `Olá, sou ${lead.name} da ${lead.company}.`,
+    `CNPJ: ${lead.cnpj}`,
+    `Operação: ${lead.topic}`,
+    `Produto: ${lead.product}`,
+    `NCM: ${lead.ncm}`,
+    `Volume mensal: ${lead.volumeLabel}`,
+    lead.cargo ? `Volume da carga: ${lead.cargo}` : "",
+    lead.message
+  ].filter(Boolean);
+  return `https://wa.me/5511969287540?text=${encodeURIComponent(lines.join("\n"))}`;
+}
+
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, "&amp;")
@@ -31,7 +45,7 @@ module.exports = async (req, res) => {
     return res.status(405).json({ success: false, message: "Método não permitido." });
   }
 
-  const { name, email, company, cnpj, topic, product, message, ncm, volume, cargo, page, phone, botcheck } = req.body || {};
+  const { name, email, company, cnpj, topic, product, message, ncm, volume, cargo, page, phone, channel, botcheck } = req.body || {};
 
   if (botcheck) {
     return res.status(200).json({ success: true });
@@ -49,6 +63,7 @@ module.exports = async (req, res) => {
   const trimmedCargo = String(cargo || "").trim();
   const trimmedPage = String(page || "").trim();
   const trimmedPhone = String(phone || "").trim();
+  const trimmedChannel = String(channel || "email").trim();
   const volumeLabels = {
     pessoal: "Compra pessoal ou ainda sem operação",
     "ate-5": "Até US$ 5 mil por mês",
@@ -84,17 +99,20 @@ module.exports = async (req, res) => {
   if (!volumeLabels[trimmedVolume]) {
     return res.status(400).json({ success: false, message: "Selecione o volume mensal." });
   }
-  if (trimmedCargo.length < 2 || trimmedCargo.length > 160) {
-    return res.status(400).json({ success: false, message: "Informe o volume da carga." });
+  if (trimmedCargo.length > 160) {
+    return res.status(400).json({ success: false, message: "Resuma o volume da carga." });
   }
   if (trimmedPhone && trimmedPhone.replace(/\D/g, "").length < 10) {
     return res.status(400).json({ success: false, message: "Informe um WhatsApp com DDD." });
+  }
+  if (trimmedChannel !== "email" && trimmedChannel !== "whatsapp") {
+    return res.status(400).json({ success: false, message: "Escolha e-mail ou WhatsApp." });
   }
   if (trimmedVolume === "pessoal") {
     return res.status(200).json({
       success: false,
       qualified: false,
-      message: "Para compra pessoal, fale conosco pelo WhatsApp."
+      message: "Para compra pessoal, este canal é destinado a operações de comércio exterior."
     });
   }
 
@@ -106,12 +124,16 @@ module.exports = async (req, res) => {
   }
 
   const resend = new Resend(process.env.RESEND_API_KEY);
+  const channelLabel = trimmedChannel === "whatsapp" ? "Contato via WhatsApp" : "E-mail do site";
   const to = process.env.CONTACT_TO_EMAIL || "operacional@vmiass.com";
   const from = process.env.RESEND_FROM_EMAIL || "VMI Assessoria <operacional@vmiass.com>";
-  const subject = `Nova solicitação VMI: ${trimmedTopic}`;
+  const subject = trimmedChannel === "whatsapp"
+    ? `Contato via WhatsApp: ${trimmedTopic}`
+    : `Nova solicitação VMI: ${trimmedTopic}`;
 
   const html = `
     <h2>Nova solicitação pelo site VMI</h2>
+    <p><strong>Canal:</strong> ${escapeHtml(channelLabel)}</p>
     <p><strong>Nome:</strong> ${escapeHtml(trimmedName)}</p>
     <p><strong>E-mail:</strong> ${escapeHtml(trimmedEmail)}</p>
     <p><strong>Empresa:</strong> ${escapeHtml(trimmedCompany)}</p>
@@ -144,7 +166,7 @@ module.exports = async (req, res) => {
       });
       return res.status(500).json({
         success: false,
-        message: "Não foi possível enviar. Tente novamente ou use o WhatsApp."
+        message: "Não foi possível enviar. Tente novamente."
       });
     }
 
@@ -161,6 +183,8 @@ module.exports = async (req, res) => {
         volume: trimmedVolume,
         volumeLabel: volumeLabels[trimmedVolume],
         cargo: trimmedCargo,
+        channel: trimmedChannel,
+        channelLabel,
         message: trimmedMessage,
         page: trimmedPage || "home"
       });
@@ -168,12 +192,25 @@ module.exports = async (req, res) => {
       console.error("Lead store error:", storeErr);
     }
 
-    return res.status(200).json({ success: true });
+    return res.status(200).json({
+      success: true,
+      whatsappUrl: trimmedChannel === "whatsapp" ? buildWhatsappUrl({
+        name: trimmedName,
+        company: trimmedCompany,
+        cnpj: trimmedCnpj,
+        topic: trimmedTopic,
+        product: trimmedProduct,
+        ncm: trimmedNcm,
+        volumeLabel: volumeLabels[trimmedVolume],
+        cargo: trimmedCargo,
+        message: trimmedMessage
+      }) : ""
+    });
   } catch (err) {
     console.error("Contact API error:", err);
     return res.status(500).json({
       success: false,
-      message: "Erro ao enviar. Tente novamente ou fale conosco pelo WhatsApp."
+      message: "Erro ao enviar. Tente novamente."
     });
   }
 };

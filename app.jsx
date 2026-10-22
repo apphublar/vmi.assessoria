@@ -2,13 +2,8 @@
 const { useState, useEffect, useRef } = React;
 const I = window.VMIIcons;
 
-const WHATSAPP = "https://wa.me/5511969287540";
-const EMAIL = "operacional@vmiass.com";
-const PHONE = "(11) 96928-7540";
 const LINKEDIN = "https://www.linkedin.com/company/vmi-assessoria-empresarial-ltda";
-const LINKEDIN_HANDLE = "vmi-assessoria-empresarial-ltda";
 const INSTAGRAM = "https://instagram.com/vmiassessoria";
-const INSTAGRAM_HANDLE = "@vmiassessoria";
 const HQ_STREET = "Av. Paulista";
 const HQ_CITY = "São Paulo, SP";
 const CONTACT_API = "/api/contact";
@@ -110,9 +105,11 @@ function BrandMark({ size = "nav" }) {
   return (
     <div className={`brand brand--${size}`}>
       <img
-        src="/assets/logo-vmi.svg"
+        src="/assets/logo-vmi.webp"
         alt="VMI"
         className="brand-logo"
+        width="213"
+        height="160"
       />
     </div>
   );
@@ -175,8 +172,7 @@ function Nav() {
     ["Quem Somos", siteHref("#quem-somos")],
     ["Reconhecimento", siteHref("#reconhecimento")],
     ["Serviços", siteHref("#servicos")],
-    ["Diferenciais", siteHref("#diferenciais")],
-    ["Contato", siteHref("#contato")]
+    ["Diferenciais", siteHref("#diferenciais")]
   ];
   return (
     <header className={`nav ${scrolled ? "is-scrolled" : ""}`}>
@@ -186,8 +182,8 @@ function Nav() {
           {links.map(([l, h]) => <a key={h} href={h}>{l}</a>)}
         </nav>
         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-          <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="cta primary">
-            Fale agora <I.Arrow className="arrow" />
+          <a href={siteHref("#contato")} className="cta primary">
+            Contato <I.Arrow className="arrow" />
           </a>
           <button className="nav-toggle" aria-label="Menu" onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <I.Close /> : <I.Menu />}
@@ -219,7 +215,7 @@ function Hero() {
             </p>
             <div className="hero-meta">
               <a href="#contato" className="cta primary">Solicite uma proposta <I.Arrow className="arrow" /></a>
-              <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="cta ghost">Falar com Especialista</a>
+              <a href="#contato" className="cta ghost">Falar com Especialista</a>
             </div>
             <ul className="hero-trust" aria-label="Diferenciais de confiança">
               {SITE_CONFIG.heroTrust.map((item) => (
@@ -240,10 +236,12 @@ function PortVisual() {
   return (
     <div className="hero-visual hero-visual--photo">
       <img
-        src="/assets/hero-porto.webp"
+        src="/assets/hero-porto-720.webp"
+        srcSet="/assets/hero-porto-720.webp 720w, /assets/hero-porto.webp 1122w"
+        sizes="(max-width: 900px) 92vw, 420px"
         alt="Navio porta-contêineres no porto ao pôr do sol"
-        width="800"
-        height="1000"
+        width="720"
+        height="900"
         fetchPriority="high"
         decoding="async"
       />
@@ -393,7 +391,7 @@ function Award() {
         </div>
 
         <figure className="award-hero">
-          <img src={featured.src} alt={featured.alt} />
+          <img src={featured.src} alt={featured.alt} loading="lazy" decoding="async" />
           <figcaption>{featured.caption}</figcaption>
         </figure>
 
@@ -428,7 +426,7 @@ function Award() {
                 <I.Arrow />
               </button>
               {current.type === "video" ? (
-                <video key={current.src} src={current.src} controls playsInline preload="metadata" title={current.caption}>
+                <video key={current.src} src={current.src} controls playsInline preload="none" title={current.caption}>
                   Seu navegador não reproduz vídeo.
                 </video>
               ) : (
@@ -458,7 +456,7 @@ function Award() {
                   {item.type === "video" ? (
                     <span className="award-modal__video-mark">Vídeo</span>
                   ) : (
-                    <img src={item.src} alt="" />
+                    <img src={item.src} alt="" loading="lazy" decoding="async" />
                   )}
                 </button>
               ))}
@@ -645,10 +643,8 @@ function CtaBlock() {
             </p>
           </div>
           <div className="cta-actions">
-            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="cta primary">
-              <I.Wpp style={{ width: 16, height: 16 }} /> Falar com Especialista
-            </a>
-            <a href="#contato" className="cta ghost">Solicitar proposta por e-mail <I.Arrow className="arrow" /></a>
+            <a href="#contato" className="cta primary">Falar com Especialista</a>
+            <a href="#contato" className="cta ghost">Solicite uma proposta <I.Arrow className="arrow" /></a>
             <span style={{ fontSize: 12.5, color: "var(--muted)", marginTop: 6, letterSpacing: "0.04em" }}>
               Atendimento de segunda a sexta, das 9h às 18h
             </span>
@@ -706,8 +702,10 @@ function Contact() {
   const [form, setForm] = useState(emptyForm);
   const [errors, setErrors] = useState({});
   const [sent, setSent] = useState(false);
+  const [sentChannel, setSentChannel] = useState("");
+  const [whatsappUrl, setWhatsappUrl] = useState("");
   const [blocked, setBlocked] = useState(false);
-  const [sending, setSending] = useState(false);
+  const [sendingChannel, setSendingChannel] = useState("");
   const [submitError, setSubmitError] = useState("");
 
   const validate = () => {
@@ -719,7 +717,7 @@ function Contact() {
     if (form.product.trim().length < 2) e.product = "Informe o produto.";
     if (!form.ncm.trim()) e.ncm = "Informe o NCM ou escreva Não sei informar.";
     if (!form.volume) e.volume = "Selecione o volume mensal.";
-    if (form.cargo.trim().length < 2) e.cargo = "Informe o volume da carga.";
+    if (form.cargo.trim().length > 160) e.cargo = "Resuma o volume da carga.";
     if (form.phone.trim() && form.phone.replace(/\D/g, "").length < 10) e.phone = "Informe um WhatsApp com DDD.";
     if (!form.msg.trim() || form.msg.trim().length < 10) e.msg = "Descreva sua necessidade (10+ caracteres).";
     setErrors(e);
@@ -727,6 +725,7 @@ function Contact() {
   };
   const submit = async (ev) => {
     ev.preventDefault();
+    const channel = ev.nativeEvent && ev.nativeEvent.submitter ? ev.nativeEvent.submitter.value : "email";
     if (!validate()) return;
     const formEl = ev.currentTarget;
     if (formEl.botcheck?.checked) return;
@@ -737,7 +736,7 @@ function Contact() {
       return;
     }
 
-    setSending(true);
+    setSendingChannel(channel);
     setSubmitError("");
     try {
       const payload = {
@@ -752,7 +751,8 @@ function Contact() {
         cargo: form.cargo.trim(),
         phone: form.phone.trim(),
         message: form.msg.trim(),
-        page: PAGE
+        page: PAGE,
+        channel
       };
       const res = await fetch(CONTACT_API, {
         method: "POST",
@@ -762,22 +762,27 @@ function Contact() {
       const data = await res.json();
       if (res.ok && data.success) {
         setSent(true);
-        trackEvent("generate_lead", { topic: form.topic, volume: form.volume, page: PAGE });
+        setSentChannel(channel);
+        setWhatsappUrl(data.whatsappUrl || "");
+        if (data.whatsappUrl) window.open(data.whatsappUrl, "_blank", "noopener,noreferrer");
+        trackEvent("generate_lead", { topic: form.topic, volume: form.volume, page: PAGE, channel });
       } else if (data.qualified === false) {
         setBlocked(true);
         trackEvent("lead_unqualified", { volume: form.volume, topic: form.topic, page: PAGE });
       } else {
-        setSubmitError(data.message || "Não foi possível enviar. Tente novamente ou use o WhatsApp.");
+        setSubmitError(data.message || "Não foi possível enviar. Tente novamente.");
       }
     } catch {
-      setSubmitError("Erro de conexão. Tente novamente ou fale conosco pelo WhatsApp.");
+      setSubmitError("Erro de conexão. Tente novamente.");
     } finally {
-      setSending(false);
+      setSendingChannel("");
     }
   };
   const setF = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   const resetForm = () => {
     setSent(false);
+    setSentChannel("");
+    setWhatsappUrl("");
     setBlocked(false);
     setSubmitError("");
     setForm(emptyForm());
@@ -802,18 +807,22 @@ function Contact() {
             {blocked ? (
               <div>
                 <div className="form-error-msg">
-                  Este canal é para operações de comércio exterior. Se a sua necessidade for pontual, fale com a equipe pelo WhatsApp.
+                  Este canal é para operações de comércio exterior.
                 </div>
-                <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="cta primary" style={{ marginTop: 22 }}>
-                  <I.Wpp style={{ width: 16, height: 16 }} /> Falar no WhatsApp
-                </a>
               </div>
             ) : sent ? (
               <div>
                 <div className="success-msg">
                   <I.Shield style={{ width: 18, height: 18 }} />
-                  Mensagem enviada. Nossa equipe entrará em contato em breve.
+                  {sentChannel === "whatsapp"
+                    ? "Mensagem enviada. Abrimos o WhatsApp com o resumo da sua operação."
+                    : "Mensagem enviada. Nossa equipe entrará em contato em breve."}
                 </div>
+                {sentChannel === "whatsapp" && whatsappUrl && (
+                  <a className="cta primary" style={{ marginTop: 22 }} href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                    Continuar no WhatsApp <I.Arrow className="arrow" />
+                  </a>
+                )}
                 <button
                   className="cta ghost"
                   style={{ marginTop: 22 }}
@@ -872,7 +881,7 @@ function Contact() {
                 <div className="field-row">
                   <div className={`field required ${errors.ncm ? "error" : ""}`}>
                     <label>NCM</label>
-                    <input type="text" value={form.ncm} onChange={setF("ncm")} placeholder="Ex.: 8471.30.12 ou Não sei informar" aria-required="true" />
+                    <input type="text" value={form.ncm} onChange={setF("ncm")} placeholder="8471.30.12 ou Não sei informar" aria-required="true" />
                     <span className="err">{errors.ncm || ""}</span>
                   </div>
                   <div className={`field required ${errors.volume ? "error" : ""}`}>
@@ -885,9 +894,9 @@ function Contact() {
                     <span className="err">{errors.volume || ""}</span>
                   </div>
                 </div>
-                <div className={`field required ${errors.cargo ? "error" : ""}`}>
+                <div className={`field ${errors.cargo ? "error" : ""}`}>
                   <label>Volume da carga</label>
-                  <input type="text" value={form.cargo} onChange={setF("cargo")} placeholder="Quantidade da carga" aria-required="true" />
+                  <input type="text" value={form.cargo} onChange={setF("cargo")} placeholder="Quantidade da carga" />
                   <span className="hint">Sugestão: 1 contêiner, 100 caixas, 10 pallets.</span>
                   <span className="err">{errors.cargo || ""}</span>
                 </div>
@@ -904,49 +913,18 @@ function Contact() {
                 <div className="form-foot">
                   <span className="consent">Ao enviar você concorda em ser contatado pela equipe VMI.</span>
                   {submitError && <div className="form-error-msg">{submitError}</div>}
-                  <button type="submit" className="cta primary" disabled={sending}>
-                    {sending ? "Enviando..." : "Falar com Especialista"} {!sending && <I.Arrow className="arrow" />}
-                  </button>
+                  <div className="form-actions">
+                    <button type="submit" value="email" className="cta primary" disabled={!!sendingChannel}>
+                      {sendingChannel === "email" ? "Enviando..." : "Enviar por e-mail"}
+                    </button>
+                    <button type="submit" value="whatsapp" className="cta ghost" disabled={!!sendingChannel}>
+                      {sendingChannel === "whatsapp" ? "Enviando..." : "Enviar por WhatsApp"}
+                    </button>
+                  </div>
                 </div>
               </form>
             )}
           </Reveal>
-
-          <div className="contact-side">
-            <Reveal>
-              <h3>Canais diretos</h3>
-              <div className="contact-list">
-                <a href={WHATSAPP} target="_blank" rel="noopener">
-                  <span className="ico"><I.Phone /></span>
-                  <span>
-                    <span className="lbl">WhatsApp</span>
-                    {PHONE}
-                  </span>
-                </a>
-                <a href={`mailto:${EMAIL}`}>
-                  <span className="ico"><I.Mail /></span>
-                  <span>
-                    <span className="lbl">E-mail</span>
-                    {EMAIL}
-                  </span>
-                </a>
-                <a href={LINKEDIN} target="_blank" rel="noopener noreferrer">
-                  <span className="ico ico--social"><I.Linkedin /></span>
-                  <span>
-                    <span className="lbl">LinkedIn</span>
-                    {LINKEDIN_HANDLE}
-                  </span>
-                </a>
-                <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer">
-                  <span className="ico ico--social"><I.Instagram /></span>
-                  <span>
-                    <span className="lbl">Instagram</span>
-                    {INSTAGRAM_HANDLE}
-                  </span>
-                </a>
-              </div>
-            </Reveal>
-          </div>
         </div>
       </div>
     </section>
@@ -974,7 +952,6 @@ function Footer() {
             <div className="footer-social">
               <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><I.Instagram /></a>
               <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><I.Linkedin /></a>
-              <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><I.Wpp /></a>
             </div>
           </div>
 
@@ -988,21 +965,8 @@ function Footer() {
           </div>
 
           <div className="footer-col">
-            <h4>Contato</h4>
-            <ul>
-              <li><a href={WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
-              <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
-            </ul>
-          </div>
-
-          <div className="footer-col">
             <h4>Localização</h4>
             <p className="footer-location">{HQ_STREET}<br />{HQ_CITY}</p>
-            <h4 className="footer-col__sub">Redes Sociais</h4>
-            <ul>
-              <li><a href={INSTAGRAM} target="_blank" rel="noopener noreferrer">Instagram</a></li>
-              <li><a href={LINKEDIN} target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-            </ul>
           </div>
         </div>
 
@@ -1060,7 +1024,7 @@ function ServicePage({ page }) {
           <p className="lede">{page.lead}</p>
           <div className="hero-meta">
             <a href="#contato" className="cta primary">Solicitar análise <I.Arrow className="arrow" /></a>
-            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="cta ghost">Falar no WhatsApp</a>
+            <a href="#contato" className="cta ghost">Falar com Especialista</a>
           </div>
         </div>
       </section>
@@ -1156,10 +1120,6 @@ function App() {
         </React.Fragment>
       )}
       <Footer />
-      <a className="wa-float" href={WHATSAPP} target="_blank" rel="noopener" aria-label="Fale conosco pelo WhatsApp">
-        <I.Wpp />
-        <span className="wa-label">Fale conosco</span>
-      </a>
       <ConsentBanner />
       <TrackClicks />
     </React.Fragment>

@@ -9,6 +9,7 @@ const HQ_CITY = "São Paulo, SP";
 const CONTACT_API = "/api/contact";
 const PAGE = (document.body && document.body.dataset.page) || "home";
 const IS_HOME = PAGE === "home";
+const HAS_SHELL = !!document.querySelector("[data-shell]");
 
 function siteHref(hash) {
   return IS_HOME ? hash : `/${hash}`;
@@ -1017,6 +1018,7 @@ const SERVICE_PAGES = {
 function ServicePage({ page }) {
   return (
     <React.Fragment>
+      {HAS_SHELL ? null : (
       <section className="service-hero theme-light">
         <div className="container">
           <span className="eyebrow">{page.kicker}</span>
@@ -1028,6 +1030,7 @@ function ServicePage({ page }) {
           </div>
         </div>
       </section>
+      )}
       <section className="theme-light alt">
         <div className="container">
           <div className="services">
@@ -1103,10 +1106,10 @@ function App() {
   const service = SERVICE_PAGES[PAGE];
   return (
     <React.Fragment>
-      <Nav />
+      {HAS_SHELL ? null : <Nav />}
       {service ? <ServicePage page={service} /> : (
         <React.Fragment>
-          <Hero />
+          {HAS_SHELL ? null : <Hero />}
           <SocialProof />
           <TrustStrip />
           <About />

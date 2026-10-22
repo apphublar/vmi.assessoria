@@ -58,7 +58,6 @@
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KSZNTP93" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <main id="conteudo" class="conteudo-indexavel">
     <p><a href="/">VMI Assessoria Empresarial</a></p>
-    <h1>Exportação estruturada para vender no exterior com previsibilidade.</h1>
     <p>Organizamos a saída da mercadoria, a documentação e a logística para a operação chegar ao comprador com conformidade.</p>
     <h2>Estruturação da exportação</h2>
     <p>Avaliamos produto, destino, documentos e a melhor forma de operar.</p>
@@ -73,6 +72,38 @@
     <p>Av. Paulista, São Paulo, SP. Atendimento de segunda a sexta, das 9h às 18h.</p>
     <p>Veja também <a href="/importacao/">importação</a> e <a href="/despacho-aduaneiro/">despacho aduaneiro</a>.</p>
   </main>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="/" aria-label="VMI"><img class="brand-logo" src="/assets/logo-vmi.webp" alt="" width="128" height="96" /></a>
+      <nav class="nav-links">
+        <a href="/#quem-somos">Quem Somos</a>
+        <a href="/#reconhecimento">Reconhecimento</a>
+        <a href="/#servicos">Serviços</a>
+        <a href="/#diferenciais">Diferenciais</a>
+      </nav>
+      <div style="display:flex;gap:12px;align-items:center">
+        <a href="#contato" class="cta primary">Contato <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <button class="nav-toggle" type="button" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg></button>
+      </div>
+    </div>
+    <div class="mobile-panel">
+      <a href="/#quem-somos">Quem Somos</a>
+      <a href="/#reconhecimento">Reconhecimento</a>
+      <a href="/#servicos">Serviços</a>
+      <a href="/#diferenciais">Diferenciais</a>
+    </div>
+  </header>
+  <section class="service-hero theme-light" data-shell>
+    <div class="container">
+      <span class="eyebrow">Exportação</span>
+      <h1>Exportação estruturada para vender no exterior com previsibilidade.</h1>
+      <p class="lede">Organizamos a saída da mercadoria, a documentação e a logística para a operação chegar ao comprador com conformidade.</p>
+      <div class="hero-meta">
+        <a href="#contato" class="cta primary">Solicitar análise <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="#contato" class="cta ghost">Falar com Especialista</a>
+      </div>
+    </div>
+  </section>
   <div id="root"></div>
   <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous" defer></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous" defer></script>
@@ -85,6 +116,21 @@
       if (!window.VMIApp || !window.ReactDOM) return;
       ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(window.VMIApp));
     });
+    (function () {
+      var toggle = document.querySelector(".nav-toggle");
+      var panel = document.querySelector(".mobile-panel");
+      if (toggle && panel) {
+        toggle.addEventListener("click", function () { panel.classList.toggle("open"); });
+        panel.addEventListener("click", function (ev) {
+          if (ev.target.closest && ev.target.closest("a")) panel.classList.remove("open");
+        });
+      }
+      var nav = document.querySelector(".nav");
+      if (!nav) return;
+      var onScroll = function () { nav.classList.toggle("is-scrolled", window.scrollY > 8); };
+      onScroll();
+      window.addEventListener("scroll", onScroll, { passive: true });
+    })();
   </script>
 </body>
 </html>

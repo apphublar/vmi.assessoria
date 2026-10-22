@@ -103,7 +103,6 @@
 <body data-page="home">
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KSZNTP93" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <main id="conteudo" class="conteudo-indexavel">
-    <h1>Habilitamos operações internacionais com segurança, agilidade e inteligência.</h1>
     <p>Assessoria completa em importação, exportação e logística internacional. Da busca por fornecedores até a entrega da mercadoria.</p>
     <p>Especialistas em comércio exterior. Parceiros no crescimento do seu negócio.</p>
     <ul>
@@ -172,6 +171,55 @@
     <p>Av. Paulista, São Paulo, SP.</p>
     <p><a href="https://www.linkedin.com/company/vmi-assessoria-empresarial-ltda">LinkedIn</a> e <a href="https://instagram.com/vmiassessoria">Instagram</a>.</p>
   </main>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="#top" aria-label="VMI"><img class="brand-logo" src="/assets/logo-vmi.webp" alt="" width="128" height="96" /></a>
+      <nav class="nav-links">
+        <a href="#quem-somos">Quem Somos</a>
+        <a href="#reconhecimento">Reconhecimento</a>
+        <a href="#servicos">Serviços</a>
+        <a href="#diferenciais">Diferenciais</a>
+      </nav>
+      <div style="display:flex;gap:12px;align-items:center">
+        <a href="#contato" class="cta primary">Contato <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <button class="nav-toggle" type="button" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg></button>
+      </div>
+    </div>
+    <div class="mobile-panel">
+      <a href="#quem-somos">Quem Somos</a>
+      <a href="#reconhecimento">Reconhecimento</a>
+      <a href="#servicos">Serviços</a>
+      <a href="#diferenciais">Diferenciais</a>
+    </div>
+  </header>
+  <section class="hero" id="top" data-shell>
+    <div class="container" style="position:relative">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">Comércio Exterior &amp; Logística Internacional</span>
+          <h1>Habilitamos operações internacionais com <span class="accent">segurança, agilidade e inteligência.</span></h1>
+          <p class="lede">Assessoria completa em importação, exportação e logística internacional. Da busca por fornecedores até a entrega da mercadoria.</p>
+          <div class="hero-meta">
+            <a href="#contato" class="cta primary">Solicite uma proposta <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a href="#contato" class="cta ghost">Falar com Especialista</a>
+          </div>
+          <ul class="hero-trust" aria-label="Diferenciais de confiança">
+            <li><span class="hero-trust-mark" aria-hidden="true">✓</span>Operações nacionais e internacionais</li>
+            <li><span class="hero-trust-mark" aria-hidden="true">✓</span>Equipe especializada</li>
+            <li><span class="hero-trust-mark" aria-hidden="true">✓</span>Presença em 12 cidades estratégicas</li>
+            <li><span class="hero-trust-mark" aria-hidden="true">✓</span>Atendimento personalizado</li>
+          </ul>
+        </div>
+        <div class="hero-visual hero-visual--photo">
+          <img src="/assets/hero-porto-720.webp" srcset="/assets/hero-porto-720.webp 720w, /assets/hero-porto.webp 1122w" sizes="(max-width: 900px) 92vw, 420px" alt="Navio porta-contêineres no porto ao pôr do sol" width="720" height="900" fetchpriority="high" decoding="async" />
+          <div class="hero-quote">
+            <span class="qmark">"</span>
+            <p>Especialistas em comércio exterior. Parceiros no crescimento do seu negócio.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
   <div id="root"></div>
   <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous" defer></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous" defer></script>
@@ -184,6 +232,21 @@
       if (!window.VMIApp || !window.ReactDOM) return;
       ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(window.VMIApp));
     });
+    (function () {
+      var toggle = document.querySelector(".nav-toggle");
+      var panel = document.querySelector(".mobile-panel");
+      if (toggle && panel) {
+        toggle.addEventListener("click", function () { panel.classList.toggle("open"); });
+        panel.addEventListener("click", function (ev) {
+          if (ev.target.closest && ev.target.closest("a")) panel.classList.remove("open");
+        });
+      }
+      var nav = document.querySelector(".nav");
+      if (!nav) return;
+      var onScroll = function () { nav.classList.toggle("is-scrolled", window.scrollY > 8); };
+      onScroll();
+      window.addEventListener("scroll", onScroll, { passive: true });
+    })();
   </script>
 </body>
 </html>

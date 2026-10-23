@@ -10,6 +10,16 @@ const CONTACT_API = "/api/contact";
 const PAGE = (document.body && document.body.dataset.page) || "home";
 const IS_HOME = PAGE === "home";
 const HAS_SHELL = !!document.querySelector("[data-shell]");
+const SPECIALIST_TOPIC = {
+  importacao: "importação",
+  exportacao: "exportação",
+  "despacho-aduaneiro": "despacho aduaneiro"
+};
+const SPECIALIST_WHATSAPP = `https://wa.me/5511969287540?text=${encodeURIComponent(
+  SPECIALIST_TOPIC[PAGE]
+    ? `Olá, vim pelo site da VMI e quero falar sobre ${SPECIALIST_TOPIC[PAGE]}.`
+    : "Olá, vim pelo site da VMI e quero falar com um especialista."
+)}`;
 
 function siteHref(hash) {
   return IS_HOME ? hash : `/${hash}`;
@@ -216,7 +226,7 @@ function Hero() {
             </p>
             <div className="hero-meta">
               <a href="#contato" className="cta primary">Solicite uma proposta <I.Arrow className="arrow" /></a>
-              <a href="#contato" className="cta ghost">Falar com Especialista</a>
+              <a href={SPECIALIST_WHATSAPP} className="cta ghost" target="_blank" rel="noopener noreferrer">Falar com Especialista</a>
             </div>
             <ul className="hero-trust" aria-label="Diferenciais de confiança">
               {SITE_CONFIG.heroTrust.map((item) => (
@@ -644,7 +654,7 @@ function CtaBlock() {
             </p>
           </div>
           <div className="cta-actions">
-            <a href="#contato" className="cta primary">Falar com Especialista</a>
+            <a href={SPECIALIST_WHATSAPP} className="cta primary" target="_blank" rel="noopener noreferrer">Falar com Especialista</a>
             <a href="#contato" className="cta ghost">Solicite uma proposta <I.Arrow className="arrow" /></a>
             <span style={{ fontSize: 12.5, color: "var(--muted)", marginTop: 6, letterSpacing: "0.04em" }}>
               Atendimento de segunda a sexta, das 9h às 18h
@@ -1026,7 +1036,7 @@ function ServicePage({ page }) {
           <p className="lede">{page.lead}</p>
           <div className="hero-meta">
             <a href="#contato" className="cta primary">Solicitar análise <I.Arrow className="arrow" /></a>
-            <a href="#contato" className="cta ghost">Falar com Especialista</a>
+            <a href={SPECIALIST_WHATSAPP} className="cta ghost" target="_blank" rel="noopener noreferrer">Falar com Especialista</a>
           </div>
         </div>
       </section>
